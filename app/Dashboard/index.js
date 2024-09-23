@@ -1,15 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import LeaveScreen from './../../components/LeaveScreen'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const index = () => {
   return (
-    <View style={{ flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingTop: 50}}>
-        <LeaveScreen></LeaveScreen>
-    </View>
+    <SafeAreaView>
+      <Text>Dashboard</Text>
+    </SafeAreaView>
   )
 }
 

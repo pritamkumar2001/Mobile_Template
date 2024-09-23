@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import ApplyLeave from '../../components/ApplyLeave'
-
+import ApproveLeave from '../../components/ApproveLeave'
 import { useRoute } from '@react-navigation/native';
 
 const index = () => {
@@ -15,7 +14,7 @@ const index = () => {
     <View style={{ flex: 1,
         
         }}>
-            <ApplyLeave id={emp_data_id}/>
+            <ApproveLeave/>
     </View>
   )
 }

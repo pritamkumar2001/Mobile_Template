@@ -1,13 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from 'react'
 import { AppContext } from '../../context/AppContext';
+import HomeScreen from '../../components/HomeScreen';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const home = () => {
   const { state } = useContext(AppContext);
 
   return (
-    <View style={{padding:30}}>
-      <Text>{state}</Text>
-    </View>
+    <SafeAreaView>
+      <HomeScreen/>
+    </SafeAreaView>
   )
 }
 

@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import ApplyLeave from '../../components/ApplyLeave'
-
+import ApproveLeave from '../../components/ApproveLeave'
 import { useRoute } from '@react-navigation/native';
+import AddClaim from '../../components/AddClaim';
 
 const index = () => {
 
@@ -10,12 +10,12 @@ const index = () => {
   const leave = route.params;
   const emp_data_id = leave.id
   // const extractedEmpData = route.params.leave?.map((leave) => leave.emp_data);
-  console.log(emp_data_id,"data--->")
+  // console.log(emp_data_id,"data--->")
   return (
     <View style={{ flex: 1,
         
         }}>
-            <ApplyLeave id={emp_data_id}/>
+            <AddClaim/>
     </View>
   )
 }

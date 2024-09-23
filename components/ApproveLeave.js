@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View, TouchableOpacity } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons'; // For icons
 import { useNavigation } from '@react-navigation/native';
 import { Link, useRouter } from "expo-router";
 import ModalComponent from '../components/ModalComponent';
-import ModalComponentCancel from '../components/ModalComponentCancel';
-import { getEmpLeave } from './services/productServices';
-
+import ModalComponentApprove from './ModalComponentApprove';
+import ModalComponentReject from './ModalComponentReject';
+import {getEmpLeave} from './services/productServices'
 // Container for the whole screen
 const Container = styled.View`
   padding: 16px;
@@ -33,6 +33,7 @@ const CardRow = styled.View`
 const LeaveCard = styled.TouchableOpacity`
   width: 95%;
   background-color: ${props => props.bgColor || '#fff'};
+  /* padding: 20px; */
   border-radius: 16px;
   border-width: 1px;
   border-color: ${props => props.borderColor || '#ddd'};
@@ -112,7 +113,14 @@ const ApplicationStatusText = styled.Text`
   margin-left: 8px;
 `;
 
-const CancelButton = styled.TouchableOpacity`
+
+
+const DetailText = styled.Text`
+  font-size: 14px;
+  color: #333;
+`;
+
+const RejectButton = styled.TouchableOpacity`
   background-color: #ff6666;
   display: flex;
   align-items: center;
@@ -123,52 +131,22 @@ const CancelButton = styled.TouchableOpacity`
   margin-top: 10px;
   /* margin-left: 10px; */
 `;
-
-const CancelButtonText = styled.Text`
-  color: #fff;
-  font-size: 14px;
-`;
-
-// Tab container and buttons
-const TabContainer = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  margin-vertical: 10px;
-`;
-
-const TabButton = styled.TouchableOpacity`
-  flex: 1;
+const ApprovelButton = styled.TouchableOpacity`
+  background-color: #06BF63;
+  display: flex;
   align-items: center;
-`;
+  justify-content: center;
 
-const TabButtonActive = styled(TabButton)`
-  border-bottom-width: 3px;
-  border-color: blue;
-  color: black;
-`;
-
-const TabText = styled.Text`
-  font-size: 16px;
-  color: gray;
-  margin-bottom: 10px;
-`;
-
-const TabTextActive = styled(TabText)`
-  color: blue;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-`;
-
-// Application Details (Date, Apply Days, etc.)
-const ApplicationDetails = styled.View`
+  padding: 4px 8px;
+  border-radius: 8px;
   margin-top: 10px;
+  /* margin-left: 10px; */
 `;
 
-const DetailText = styled.Text`
-  font-size: 14px;
-  color: #333;
-`;
+// const CancelButtonText = styled.Text`
+//   color: #fff;
+//   font-size: 14px;
+// `;
 
 const DetailHighlight = styled.Text`
   font-weight: bold;
@@ -179,11 +157,17 @@ const LeaveScreen = () => {
   const navigation = useNavigation(); // Access the navigation object
   const router = useRouter();
   
+  
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [isCancelModalVisible, setCancelModalVisible] = useState(false);
-  const [leaveData, setLeaveData] = useState([]);
-  const [selectedTab, setSelectedTab] = useState('My Leave');
+  const [leaveData,setLeavedata]=useState([]);
+  const [isRejectModalVisible, setRejectModalVisible] = useState(false);
+  const [isApproveModalVisible, setApproveModalVisible] = useState(false);
+  const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('Approve Leave');
+  // const handlePress = () => {
+  //   router.push('/LeaveApply'); 
+  // };
 
   const handlePress = (leave) => {
     router.push({
@@ -201,22 +185,34 @@ const LeaveScreen = () => {
     setModalVisible(false);
   };
 
-  const cancelLeave = (leave) => {
+  const rejectLeave = (leave) => {
     // Set selected leave and open the cancel modal
     setSelectedLeave(leave);
     console.log(leave)
-    setCancelModalVisible(true);
+    setRejectModalVisible(true);
   };
+
+  const approveLeave = (leave) => {
+    // Set selected leave and open the cancel modal
+    setSelectedLeave(leave);
+    console.log(leave)
+    setApproveModalVisible(true);
+  };
+
 
   useEffect(() => {
     leaveDetails();
   }, [selectedTab]);
+  
+
 
   const leaveDetails = () => {
-    getEmpLeave(selectedTab === 'My Leave' ? 'EL' : selectedTab === 'My Cancel Leave' ? 'EL' : 'WH').then((res) => {
-      setLeaveData(res.data);
+    getEmpLeave(selectedTab =='My Leave' ? "EL" : selectedTab =='My WFH' ? "WH" : "A" ).then((res) => {
+      setLeavedata(res.data);
     });
   };
+  
+  
 
   // Get status styles dynamically
   const getStatusStyles = (status_display) => {
@@ -233,22 +229,31 @@ const LeaveScreen = () => {
         return { bgColor: '#fff', color: '#000', borderColor: '#ddd', icon: 'check-circle' };
     }
   };
-
   const renderLeaveItem = ({ item: leave }) => {
     const { bgColor, color, borderColor, icon } = getStatusStyles(leave.status_display);
-
+  console.log(leave,"check")
     return (
-      leave.status_display!='Cancelled'&&(selectedTab=='My Leave'||selectedTab=='My WFH')?<ApplicationCard
+      <ApplicationCard
         key={leave.id}
         borderColor={borderColor}
         status={leave.status_display}
         onPress={() => handleCardPress(leave)}
       >
+        
         <ApplicationStatusContainer>
           <View>
+          <DetailText>
+            Emp. Id.: <DetailHighlight>{leave.emp_data.emp_id}</DetailHighlight>
+          </DetailText>
+          <DetailText>
+            Emp. Name: <DetailHighlight>{leave.emp_data.name}</DetailHighlight>
+          </DetailText>
           <DetailText>Date: {leave.from_date} to {leave.to_date}</DetailText>
           <DetailText>
             Leave Type: <DetailHighlight>{leave.leave_type_display}</DetailHighlight>
+          </DetailText>
+          <DetailText>
+            Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
           </DetailText>
           </View>
           <View style={{ flexDirection: 'culomn' }}>
@@ -258,107 +263,38 @@ const LeaveScreen = () => {
             </ApplicationStatus>
             {/* Show Cancel button only if status is "Submitted" */}
             {leave.status_display === 'Submitted' && (
-              <CancelButton onPress={() => cancelLeave(leave)} >
-                <CancelButtonText>Cancel</CancelButtonText>
-              </CancelButton>
+              <>
+              <ApprovelButton onPress={() => approveLeave(leave)} >
+                <ButtonText>Approve</ButtonText>
+              </ApprovelButton>
+              <RejectButton onPress={() => rejectLeave(leave)} >
+                <ButtonText>Reject</ButtonText>
+              </RejectButton>
+            </>
             )}
           </View>
-          </ApplicationStatusContainer>
-        <ApplicationDetails>
+        </ApplicationStatusContainer>
+        {/* <ApplicationDetails>
           <DetailText>
-            Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
+            
           </DetailText>
           
-        </ApplicationDetails>
-      </ApplicationCard>:leave.status_display=='Cancelled'&&selectedTab=='My Cancel Leave'&&<ApplicationCard
-        key={leave.id}
-        borderColor={borderColor}
-        status={leave.status_display}
-        onPress={() => handleCardPress(leave)}
-      >
-        <ApplicationStatusContainer>
-          <View>
-          <DetailText>Date: {leave.from_date} to {leave.to_date}</DetailText>
-          <DetailText>
-            Leave Type: <DetailHighlight>{leave.leave_type_display}</DetailHighlight>
-          </DetailText>
-          </View>
-          <View style={{ flexDirection: 'culomn' }}>
-            <ApplicationStatus bgColor={bgColor}>
-              <ApplicationStatusText color={color}>{leave.status_display}</ApplicationStatusText>
-              <MaterialIcons name={icon} size={24} color={color} />
-            </ApplicationStatus>
-            {/* Show Cancel button only if status is "Submitted" */}
-            {leave.status_display === 'Submitted' && (
-              <CancelButton onPress={() => cancelLeave(leave)} >
-                <CancelButtonText>Cancel</CancelButtonText>
-              </CancelButton>
-            )}
-          </View>
-          </ApplicationStatusContainer>
-        <ApplicationDetails>
-          <DetailText>
-            Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
-          </DetailText>
           
-        </ApplicationDetails>
+        </ApplicationDetails> */}
       </ApplicationCard>
-      
     );
   };
   
   return (
       <Container>
-        <Title>All Leaves</Title>
+        <Title>Approve Leaves</Title>
 
-        {/* Leave Cards Section */}
-        <CardRow>
-          <LeaveCard bgColor="#eaffea" borderColor="#66cc66">
-            {/* <LeaveText></LeaveText> */}
-            <LeaveNumber color="#66cc66">Total Leave Applied: 2</LeaveNumber>
-          </LeaveCard>
-          <LeaveCard bgColor="#e6ecff" borderColor="#4d88ff">
-            {/* <LeaveText>Max Leave for Year</LeaveText> */}
-            <LeaveNumber color="#4d88ff">Max Leave for Year: 0</LeaveNumber>
-          </LeaveCard>
-        </CardRow>
+        
 
-        {/* Apply Leave Button */}
-        <ApplyLeaveButton onPress={() => handlePress(leaveData[0]?.emp_data)}>
-          <MaterialIcons name="add-circle" size={24} color="#fff" />
-          <ButtonText>Apply Leave</ButtonText>
-        </ApplyLeaveButton>
-
-         {/* Tab Section */}
-      <TabContainer>
-        <TabButton onPress={() => setSelectedTab('My Leave')}>
-          {selectedTab === 'My Leave' ? (
-            <TabButtonActive>
-              <TabTextActive>My Leave</TabTextActive>
-            </TabButtonActive>
-          ) : (
-            <TabText>My Leave</TabText>
-          )}
-        </TabButton>
-        <TabButton onPress={() => setSelectedTab('My WFH')}>
-          {selectedTab === 'My WFH' ? (
-            <TabButtonActive>
-              <TabTextActive>My WFH</TabTextActive>
-            </TabButtonActive>
-          ) : (
-            <TabText>My WFH</TabText>
-          )}
-        </TabButton>
-        <TabButton onPress={() => setSelectedTab('My Cancel Leave')}>
-          {selectedTab === 'My Cancel Leave' ? (
-            <TabButtonActive>
-              <TabTextActive>My Cancel Leave</TabTextActive>
-            </TabButtonActive>
-          ) : (
-            <TabText>My Cancel Leave</TabText>
-          )}
-        </TabButton>
-      </TabContainer>
+        
+      {/* <TabContainer>
+        <TabText>List Of Employees Leaves</TabText>
+      </TabContainer> */}
 
         {/* Application List Section */}
         <ApplicationList>
@@ -379,13 +315,25 @@ const LeaveScreen = () => {
       )}
 
       {selectedLeave && (
-        <ModalComponentCancel
-          isVisible={isCancelModalVisible}
+        <ModalComponentApprove
+          isVisible={isApproveModalVisible}
           leave={selectedLeave}
-          onClose={() => setCancelModalVisible(false)} // Close the modal when user presses close
+          onClose={() => setApproveModalVisible(false)} // Close the modal when user presses close
         />
       )}
-
+      {selectedLeave && (
+        <>
+        <ModalComponentReject
+          isVisible={isRejectModalVisible}
+          leave={selectedLeave}
+          onClose={() => setRejectModalVisible(false)} // Close the modal when user presses close
+        />
+        <SuccessModal 
+          isVisible={isSuccessModalVisible} 
+          onClose={() => setSuccessModalVisible(false)} 
+        />
+        </>
+      )}
       </Container>
   );
 };

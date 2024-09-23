@@ -4,10 +4,11 @@ import { View, TextInput, TouchableOpacity,Alert } from 'react-native';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import Logos from '../../assets/images/Atom_walk_logo.jpg'
 import { useRouter } from 'expo-router';
-import { loginURL } from '../../components/ConstantServiese';
+import { loginURL } from '../../components/services/ConstantServies';
 import axios from 'axios'; // If you prefer axios for API calls
-import { getCompanyInfo, publicAxiosRequest } from '../../components/HttpMethod';
+import { getCompanyInfo } from '../../components/services/authServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { publicAxiosRequest } from '../../components/services/HttpMethod';
 const LoginScreen = () => { 
     const router = useRouter();
   const [username, setUsername] = useState('');

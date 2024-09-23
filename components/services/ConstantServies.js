@@ -54,3 +54,5 @@ export const getOrderListURL = `${endpoint}/order_list/${db_name}/`;
 export const updateTaskURL = `${endpoint}/update_task/${db_name}/`;
 export const updateLeadStatusURL = `${endpoint}/update_lead_status/${db_name}/`;
 export const getUserListURL = `${endpoint}/user_list/${db_name}/`;
+export const getEmpLeavedata = `${endpoint}/get_employee_leave/${db_name}/`;
+export const addEmpLeave = `${endpoint}/process_employee_leave/${db_name}/`;

@@ -14,11 +14,7 @@ const _layout = () => {
      headerShown:false,
      tabBarIcon:({color})=><FontAwesome name="home" size={24} color={color} />
     }}/>
-    <Tabs.Screen name='profile'options={{
-     title:'Profile',
-     headerShown:false,
-     tabBarIcon:({color})=><Ionicons name="people" size={24} color={color}/>
-    }}></Tabs.Screen> 
+    
     <Tabs.Screen name='leave'
     options={{
      title:'Leaves',
@@ -30,6 +26,11 @@ const _layout = () => {
      title:'Attendance',
      headerShown:false,
      tabBarIcon:({color})=><MaterialCommunityIcons name="calendar-account" size={24} color={color} />
+    }}></Tabs.Screen> 
+    <Tabs.Screen name='profile'options={{
+     title:'Profile',
+     headerShown:false,
+     tabBarIcon:({color})=><Ionicons name="people" size={24} color={color}/>
     }}></Tabs.Screen> 
  </Tabs>
   )
