@@ -1,5 +1,5 @@
-import { addEmpLeave, getEmpLeavedata } from "../services/ConstantServies";
-import { authAxios, authAxiosPost } from "./HttpMethod";
+import { addEmpLeave, getEmpLeavedata, addClaim, getEmpClaimdata } from "../services/ConstantServies";
+import { authAxios, authAxiosFilePost, authAxiosPost } from "./HttpMethod";
 
 export function getEmpLeave(leave_type , emp_id, year) {
     let data = {};
@@ -25,4 +25,21 @@ export function getEmpLeave(leave_type , emp_id, year) {
     console.log('Data to be sent:', data);
     return authAxiosPost(addEmpLeave, data)
   
+  }
+
+  export function postClaim(claim_data) {
+    let data = {};
+    if (claim_data) {
+      data = claim_data;
+    }
+    console.log('Data to be sent:', claim_data);
+    return authAxiosFilePost(addClaim, claim_data)
+  }
+
+  export function getEmpClaim(leave_type) {
+    let data = {
+      'call_mode':'GET'
+    };
+    
+    return authAxios(getEmpClaimdata, data)
   }

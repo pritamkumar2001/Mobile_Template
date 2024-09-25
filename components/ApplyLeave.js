@@ -125,6 +125,14 @@ const ApplyLeave = (props) => {
     font-size: 16px;
     font-weight: bold;
   `;
+  const TextArea = styled.TextInput`
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  font-size: 16px;
+  height: 100px;
+`;
 
   const pickerSelectStyles = {
     inputIOS: {
@@ -149,7 +157,7 @@ const ApplyLeave = (props) => {
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <Container>
-          <StatusBar barStyle={'light-content'} backgroundColor={'#007bff'} />
+          {/* <StatusBar barStyle={'light-content'} backgroundColor={'#007bff'} /> */}
 
           {/* From Date */}
           <FieldContainer>
@@ -199,11 +207,17 @@ const ApplyLeave = (props) => {
           <FieldContainer>
             <Label>Remark</Label>
             <RemarkInput
-              multiline
-              placeholder="Remark"
+              placeholder="Remark :"
               value={remarks}
               onChangeText={(text) => setRemarks(text)}
             />
+            {/* <TextArea
+              placeholder="Remark :"
+              value={remarks}
+              onChangeText={setRemarks}
+              multiline
+              numberOfLines={4}
+            /> */}
           </FieldContainer>
 
           {/* Type of Leave */}

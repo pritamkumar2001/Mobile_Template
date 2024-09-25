@@ -3,6 +3,8 @@ import React from 'react'
 import ApproveLeave from '../../components/ApproveLeave'
 import { useRoute } from '@react-navigation/native';
 import AddClaim from '../../components/AddClaim';
+import ClaimScreen from '../../components/ClaimScreen';
+
 
 const index = () => {
 
@@ -15,7 +17,7 @@ const index = () => {
     <View style={{ flex: 1,
         
         }}>
-            <AddClaim/>
+            <ClaimScreen/>
     </View>
   )
 }

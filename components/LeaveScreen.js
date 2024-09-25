@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, Text, View, TouchableOpacity } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, Text, StatusBar, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons'; // For icons
 import { useNavigation } from '@react-navigation/native';
@@ -192,6 +192,7 @@ const LeaveScreen = () => {
     });
   };
 
+  
   const handleCardPress = (leave) => {
     setSelectedLeave(leave);
     setModalVisible(true);
@@ -210,11 +211,13 @@ const LeaveScreen = () => {
 
   useEffect(() => {
     leaveDetails();
+    
   }, [selectedTab]);
 
   const leaveDetails = () => {
     getEmpLeave(selectedTab === 'My Leave' ? 'EL' : selectedTab === 'My Cancel Leave' ? 'EL' : 'WH').then((res) => {
       setLeaveData(res.data);
+      console.log(leaveData)
     });
   };
 
@@ -245,6 +248,7 @@ const LeaveScreen = () => {
         onPress={() => handleCardPress(leave)}
       >
         <ApplicationStatusContainer>
+        <StatusBar barStyle={'light-content'} backgroundColor={'#a970ff'} />
           <View>
           <DetailText>Date: {leave.from_date} to {leave.to_date}</DetailText>
           <DetailText>

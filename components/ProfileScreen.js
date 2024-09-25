@@ -9,11 +9,14 @@ import { getProfileInfo } from '../components/services/authServices';
 // Styled components
 const Container = styled.View`
   /* flex: 1; */
-  margin-top: 50px;
-  justify-content: center;
+  height: 100%;
+  /* margin-top: 50px; */
+  display: flex;
+  justify-content: flex-start;
   align-items: center;
   background-color: #fff;
-  
+  padding: 10px;
+  padding-top: 50px;
 `;
 
 const AvatarContainer = styled.View`

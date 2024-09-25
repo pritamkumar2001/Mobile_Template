@@ -1,10 +1,10 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StatusBar, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import {AppContext} from '../context/AppContext'
 import { getProfileInfo } from '../components/services/authServices'
 import { Link, useRouter } from "expo-router";
-import LeaveScreen from '../components/LeaveScreen'
+// import LeaveScreen from '../components/LeaveScreen'
 
 // Styled components
 const Container = styled.View`
@@ -118,7 +118,7 @@ const HomePage = () => {
         pathname: 'ApproveLeaves' 
       });
     };
-    const handlePressClaim = (leave) => {
+    const handlePressClaim = () => {
       router.push({
         pathname: 'ClaimScreen' 
       });
@@ -126,6 +126,8 @@ const HomePage = () => {
 
   return (
     <Container>
+      
+      <StatusBar barStyle={'light-content'} backgroundColor={'#a970ff'} />
       {/* Header */}
       <Header>
         <HeaderText>Welcome to</HeaderText>

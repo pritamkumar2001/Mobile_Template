@@ -56,3 +56,5 @@ export const updateLeadStatusURL = `${endpoint}/update_lead_status/${db_name}/`;
 export const getUserListURL = `${endpoint}/user_list/${db_name}/`;
 export const getEmpLeavedata = `${endpoint}/get_employee_leave/${db_name}/`;
 export const addEmpLeave = `${endpoint}/process_employee_leave/${db_name}/`;
+export const addClaim = `${endpoint}/add_claim/${db_name}/`;
+export const getEmpClaimdata = `${endpoint}/get_claim_list/${db_name}/`;
