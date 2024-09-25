@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity,Platform, Text, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
 import styled from 'styled-components/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
-import { postClaim } from './services/productServices';
+import { getExpenseItem, getExpenseProjectList, postClaim } from './services/productServices';
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from 'expo-router';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -23,10 +23,31 @@ const AddClaim = () => {
   const [fileUri, setFileUri] = useState('')
   const [fileMimeType, setFileMimeType] = useState('')
   const [imgMode,setImgMode] = useState('')
+  const [claimItem, setClaimItem] = useState([])
+  const [projectList, setProjectList] = useState([])
  
-
-  
   const navigation = useNavigation();
+
+  useEffect(()=>{
+    fetchClaimItemList();
+    fetchProjectList();
+  },[])
+
+  const fetchClaimItemList = () => {
+    getExpenseItem().then((res) => {
+      setClaimItem(res.data);
+      // console.log(res.data)
+    });
+  };
+  const fetchProjectList = () => {
+    getExpenseProjectList().then((res) => {
+      setProjectList(res.data);
+      // console.log(res.data)
+    });
+  };
+
+  console.log('claim Items ----------',claimItem)
+  console.log('Project List -----------',projectList)
 
   const handleFilePick = async () => {
     try {
@@ -171,25 +192,7 @@ const AddClaim = () => {
 
     const formData = new FormData();
 
-    // const { uri, name, mimeType } = file;
-
-    // if (imgMode=='camera') {
-    //   // const { uri, fileName, mimeType } = file;
-    //   formData.append('file_1', {
-    //     uri: fileUri,
-    //     name: fileName,
-    //     type: fileMimeType,
-    //   });
-    // }
-    
-    // if (imgMode=='file') {
-    //   const { uri, name, mimeType } = file;
-    //   formData.append('file_1', {
-    //     uri: uri,
-    //     name: name,
-    //     type: mimeType,
-    //   });
-    // }
+   
 
     formData.append('file_1', {
       uri: fileUri,
@@ -236,50 +239,50 @@ const AddClaim = () => {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
     <Container>
       <Header>Add Claim</Header>
-      <Label>Expense Item</Label>
-      <Input
-        placeholder="Expense Item"
-        value={item}
-        onChangeText={setItem}
-      />
-      <Label>Claim Amount</Label>
-      <Input
-        placeholder="Claim Amount :"
-        keyboardType="numeric"
-        value={claimAmount}
-        onChangeText={setClaimAmount}
-      />
-      {/* Type of Leave */}
-      {/* <FieldContainer>
+      
+      <FieldContainer>
             <Label>Expense Item</Label>
             <ClaimTypePicker>
               <RNPickerSelect
                 onValueChange={(value) => setItem(value)}
                 value={item}
-                items={[
-                  { label: 'Earned Leave', value: 'EL' },
-                  { label: 'Loss of Pay', value: 'LP' },
-                  { label: 'Work From Home', value: 'WH' },
-                ]}
-                placeholder={{ label: 'Select Type of Leave', value: null }}
+                items={claimItem.map((claim) => ({
+                  label: claim.name, 
+                  value: claim.id,
+                }))}
+                placeholder={{ label: 'Select Expense Item', value: null }}
                 style={pickerSelectStyles}
               />
             </ClaimTypePicker>
-          </FieldContainer> */}
+
+          </FieldContainer>
+
+          <Label>Claim Amount</Label>
+          <Input
+            placeholder="Claim Amount :"
+            keyboardType="numeric"
+            value={claimAmount}
+            onChangeText={setClaimAmount}
+          />
           
-      <Label>Project Name</Label>
-      <Input
-        placeholder="Project Name"
-        value={project}
-        onChangeText={setProject}
-      />
-      {/* <Label>Expense Quantity</Label>
-      <Input
-        placeholder="Quantity"
-        value={quantity}
-        onChangeText={setQuantity}
-        keyboardType="numeric"
-      /> */}
+          <FieldContainer>
+            <Label>Project</Label>
+            <ClaimTypePicker>
+              <RNPickerSelect
+                onValueChange={(value) => setProject(value)}
+                value={project}
+                items={projectList.map((project) => ({
+                  label: project.title, 
+                  value: project.id,
+                }))}
+                placeholder={{ label: 'Select Project', value: null }}
+                style={pickerSelectStyles}
+              />
+            </ClaimTypePicker>
+
+          </FieldContainer>
+      
+      
       <FieldContainer>
             <Label>From Date</Label>
             <DatePickerButton onPress={() => setShowDatePicker(true)}>
