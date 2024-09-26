@@ -46,8 +46,8 @@ const AddClaim = () => {
     });
   };
 
-  console.log('claim Items ----------',claimItem)
-  console.log('Project List -----------',projectList)
+  // console.log('claim Items ----------',claimItem)
+  // console.log('Project List -----------',projectList)
 
   const handleFilePick = async () => {
     try {
@@ -68,7 +68,7 @@ const AddClaim = () => {
   
                 if (!result.canceled) {
                   const compressedImage = await compressImage(result.assets[0].uri);
-                  console.log(result)
+                  // console.log(result)
                   setFileName(result.assets[0].fileName)
                   setFileUri(compressedImage.uri)
                   setFileMimeType(result.assets[0].mimeType)
@@ -111,7 +111,7 @@ const AddClaim = () => {
                   setFileMimeType(mimeType);
           
                   // Log for debugging
-                  console.log('File:', { fileName, compressedImageUri, mimeType });
+                  // console.log('File:', { fileName, compressedImageUri, mimeType });
                 }
               } catch (error) {
                 console.error('Error while picking file or compressing:', error);
@@ -203,12 +203,16 @@ const AddClaim = () => {
     
 
     formData.append('remarks', remark);
-    formData.append('item', '6');
+    formData.append('item', item);
     formData.append('quantity', "1");
     formData.append('expense_amt', claimAmount);
     formData.append('expense_date', expense_date);
-    // console.log('expense_date', expense_date)
-    console.log('Testing-------->',formData)
+
+    if (project) {
+      formData.append('project', project);
+    }
+
+    // console.log('Testing-------->',formData)
 
     
     
@@ -264,23 +268,25 @@ const AddClaim = () => {
             value={claimAmount}
             onChangeText={setClaimAmount}
           />
-          
-          <FieldContainer>
-            <Label>Project</Label>
-            <ClaimTypePicker>
-              <RNPickerSelect
-                onValueChange={(value) => setProject(value)}
-                value={project}
-                items={projectList.map((project) => ({
-                  label: project.title, 
-                  value: project.id,
-                }))}
-                placeholder={{ label: 'Select Project', value: null }}
-                style={pickerSelectStyles}
-              />
-            </ClaimTypePicker>
 
-          </FieldContainer>
+            {projectList.length > 0 && (
+              <FieldContainer>
+                <Label>Project</Label>
+                <ClaimTypePicker>
+                  <RNPickerSelect
+                    onValueChange={(value) => setProject(value)}
+                    value={project}
+                    items={projectList.map((project) => ({
+                      label: project.title, 
+                      value: project.id,
+                    }))}
+                    placeholder={{ label: 'Select Project', value: null }}
+                    style={pickerSelectStyles}
+                  />
+                </ClaimTypePicker>
+              </FieldContainer>
+            )}
+
       
       
       <FieldContainer>
@@ -304,6 +310,12 @@ const AddClaim = () => {
             )}
           </FieldContainer>
 
+          <Label>Attach File :</Label>
+          <FileButton onPress={handleFilePick}>
+            <InputText>{fileName}</InputText>
+            <Icon source={require('../assets/images/Upload-Icon.png')} />
+          </FileButton>
+
       
       <Label>Remarks :</Label>
       <TextArea
@@ -313,11 +325,7 @@ const AddClaim = () => {
         multiline
         numberOfLines={4}
       />
-      <Label>Attach File :</Label>
-      <FileButton onPress={handleFilePick}>
-        <InputText>{fileName}</InputText>
-        <Icon source={require('../assets/images/Upload-Icon.png')} />
-      </FileButton>
+      
       <SubmitButton onPress={handleSubmit}>
         <ButtonText>Submit</ButtonText>
       </SubmitButton>
