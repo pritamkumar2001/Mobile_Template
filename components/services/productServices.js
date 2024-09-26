@@ -36,11 +36,12 @@ export function getEmpLeave(leave_type , emp_id, year) {
     return authAxiosFilePost(addClaim, claim_data)
   }
 
-  export function getEmpClaim() {
+  export function getEmpClaim(res) {
     let data = {
-      'call_mode':'GET'
+      'call_mode':res
     };
     
+    console.log(res)
     return authAxios(getEmpClaimdata, data)
   }
 

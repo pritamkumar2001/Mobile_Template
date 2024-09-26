@@ -217,9 +217,12 @@ const LeaveScreen = () => {
   const leaveDetails = () => {
     getEmpLeave(selectedTab === 'My Leave' ? 'EL' : selectedTab === 'My Cancel Leave' ? 'EL' : 'WH').then((res) => {
       setLeaveData(res.data);
-      console.log(leaveData)
+      console.log('testing----------',leaveData)
     });
   };
+
+  const count = leaveData.length
+  console.log(count)
 
   // Get status styles dynamically
   const getStatusStyles = (status_display) => {
@@ -319,7 +322,7 @@ const LeaveScreen = () => {
         <CardRow>
           <LeaveCard bgColor="#eaffea" borderColor="#66cc66">
             {/* <LeaveText></LeaveText> */}
-            <LeaveNumber color="#66cc66">Total Leave Applied: 2</LeaveNumber>
+            <LeaveNumber color="#66cc66">Total Leave Applied: {count}</LeaveNumber>
           </LeaveCard>
           <LeaveCard bgColor="#e6ecff" borderColor="#4d88ff">
             {/* <LeaveText>Max Leave for Year</LeaveText> */}

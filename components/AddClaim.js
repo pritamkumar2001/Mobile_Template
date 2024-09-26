@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { View, TextInput, TouchableOpacity,Platform, Text, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
 import styled from 'styled-components/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import { getExpenseItem, getExpenseProjectList, postClaim } from './services/productServices';
 import RNPickerSelect from 'react-native-picker-select';
-import { useNavigation } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import HeaderComponent from './HeaderComponent';
 
 const AddClaim = () => {
   const [item, setItem] = useState('');
@@ -28,6 +29,14 @@ const AddClaim = () => {
  
   const navigation = useNavigation();
 
+  const router = useRouter();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
   useEffect(()=>{
     fetchClaimItemList();
     fetchProjectList();
@@ -38,6 +47,9 @@ const AddClaim = () => {
       setClaimItem(res.data);
       // console.log(res.data)
     });
+  };
+  const handleBackPress = () => {
+    navigation.goBack();
   };
   const fetchProjectList = () => {
     getExpenseProjectList().then((res) => {
@@ -241,8 +253,11 @@ const AddClaim = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+      
+      
     <Container>
-      <Header>Add Claim</Header>
+    <HeaderComponent headerTitle="Add Claim" onBackPress={handleBackPress} />
+      {/* <Title>Add Claim</Title> */}
       
       <FieldContainer>
             <Label>Expense Item</Label>
@@ -338,15 +353,18 @@ const AddClaim = () => {
 export default AddClaim;
 
 const Container = styled.View`
-  /* flex: 1; */
+  flex: 1;
   padding: 20px;
+  padding-top: 50px;
   background-color: #fff;
+  height: 100%;
 `;
 
-const Header = styled.Text`
+const Title = styled.Text`
   font-size: 24px;
   text-align: center;
   margin-bottom: 20px;
+  /* margin-top: 20px; */
   font-weight: bold;
 `;
 
@@ -369,6 +387,7 @@ const Icon = styled.Image`
   `;
   const FieldContainer = styled.View`
   margin-bottom: 20px;
+  margin-top: auto;
 `;
 
 const Label = styled.Text`
@@ -441,6 +460,7 @@ const SubmitButton = styled.TouchableOpacity`
   padding: 15px;
   border-radius: 8px;
   align-items: center;
+  margin-top: 20px;
 `;
 
 const ButtonText = styled.Text`

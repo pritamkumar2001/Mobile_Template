@@ -123,6 +123,17 @@ const HomePage = () => {
         pathname: 'ClaimScreen' 
       });
     };
+    const handlePressAClaim = (leave) => {
+      router.push({
+        pathname: 'ApproveClaim' 
+      });
+    };
+
+    const handlePressAttendance = () => {
+      router.push({
+        pathname: 'AttendanceScreen' 
+      });
+    };
 
   return (
     <Container>
@@ -160,13 +171,13 @@ const HomePage = () => {
         </MenuItem>
 
         { isManager&&
-       <MenuItem>
+       <MenuItem onPress={() => handlePressAClaim()}>
         <Image source={require('../assets/images/AClaim.png')} style={{ width: 50, height: 50 }} />
           <MenuText>Approve Claims</MenuText>
         </MenuItem>
         }
 
-        <MenuItem>
+        <MenuItem onPress={() => handlePressAttendance()}>
         <Image source={require('../assets/images/AttendanceIcon.png')} style={{ width: 50, height: 50 }} />
           <MenuText>My Attendance</MenuText>
         </MenuItem>

@@ -76,10 +76,10 @@ const ClaimStatusContainer = styled.View`
   align-items: center;
 `;
 
-const ClaimScreen = () => {
+const ApproveClaim = () => {
   const router = useRouter();
   const [claimData, setClaimData] = useState([]);
-  const requestData = 'GET'
+  const requestData = 'APPROVE'
 
   useEffect(() => {
     fetchClaimDetails();
@@ -92,11 +92,11 @@ const ClaimScreen = () => {
     });
   };
 
-  const handlePress = () => {
-    router.push({
-      pathname: 'ClaimApply',
-    });
-  };
+//   const handlePress = () => {
+//     router.push({
+//       pathname: 'ClaimApply',
+//     });
+//   };
 
   const renderClaimItem = ({ item }) => {
     return (
@@ -118,7 +118,7 @@ const ClaimScreen = () => {
   return (
     <Container>
       <StatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
-      <Title>My Claims</Title>
+      <Title>Approve Claims</Title>
 
       {/* Claim List Section */}
       <FlatList
@@ -129,12 +129,12 @@ const ClaimScreen = () => {
       />
 
       {/* Apply Claim Button */}
-      <ApplyClaimButton onPress={handlePress}>
+      {/* <ApplyClaimButton onPress={handlePress}>
         <MaterialIcons name="add-circle" size={24} color="#fff" />
         <ButtonText>Apply Claim</ButtonText>
-      </ApplyClaimButton>
+      </ApplyClaimButton> */}
     </Container>
   );
 };
 
-export default ClaimScreen;
+export default ApproveClaim;

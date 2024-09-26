@@ -7,6 +7,7 @@ import { Link, useRouter } from "expo-router";
 import ModalComponent from '../components/ModalComponent';
 import ModalComponentApprove from './ModalComponentApprove';
 import ModalComponentReject from './ModalComponentReject';
+import SuccessModal from './SuccessModal'
 import {getEmpLeave} from './services/productServices'
 // Container for the whole screen
 const Container = styled.View`
