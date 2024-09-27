@@ -6,12 +6,15 @@ import styled from 'styled-components/native';
 // Container for the header
 const HeaderContainer = styled.View`
   background-color: white;
-  padding: 15px;
+  padding: 15px 10px;
+  margin-top: 48px;
+  /* width: 100%; */
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   border-bottom-width: 1px;
   border-bottom-color: #ccc;
+  elevation: 2;
 `;
 
 // Styled text for the header title

@@ -251,12 +251,14 @@ const AddClaim = () => {
   };
 
   return (
+    <>
+    <HeaderComponent headerTitle="Add Claim" onBackPress={handleBackPress} />
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
       
       
     <Container>
-    <HeaderComponent headerTitle="Add Claim" onBackPress={handleBackPress} />
+    
       {/* <Title>Add Claim</Title> */}
       
       <FieldContainer>
@@ -347,6 +349,7 @@ const AddClaim = () => {
     </Container>
       </ScrollView>
     </KeyboardAvoidingView>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AppContext } from '../context/AppContext';
 import { getProfileInfo } from '../components/services/authServices';
+import HeaderComponent from './HeaderComponent';
 
 // Styled components
 const Container = styled.View`
@@ -101,8 +102,13 @@ const ProfileScreen = () => {
       setIsManager(res.data.user_group.is_manager);
     });
   }, []);
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
 
   return (
+    <>
+    <HeaderComponent headerTitle="My Leaves" onBackPress={handleBackPress} />
     <Container>
       <StatusBar style="auto" />
       
@@ -133,6 +139,7 @@ const ProfileScreen = () => {
         <ChangePasswordText>Change Your Password</ChangePasswordText>
       </ChangePasswordButton>
     </Container>
+    </>
   );
 };
 

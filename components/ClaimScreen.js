@@ -117,7 +117,6 @@ const ClaimScreen = () => {
 
   return (
     <Container>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'#fff'} />
       <Title>My Claims</Title>
 
       {/* Claim List Section */}

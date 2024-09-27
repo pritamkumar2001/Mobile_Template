@@ -1,17 +1,23 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { useRoute } from '@react-navigation/native';
+import AttendanceScreen from '../../components/AttendanceScreen';
 
-const attendance = () => {
+
+const index = () => {
+
+  const route = useRoute();
+  const leave = route.params;
+  // const emp_data_id = leave.id
   return (
-    <SafeAreaView>
-      {/* <ProfileScreen/> */}
-      <Text>attendance</Text>
-      </SafeAreaView>
-    
+    <View style={{ flex: 1,
+        
+        }}>
+            <AttendanceScreen/>
+    </View>
   )
 }
 
-export default attendance
+export default index
 
 const styles = StyleSheet.create({})

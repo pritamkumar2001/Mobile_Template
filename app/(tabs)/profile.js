@@ -9,10 +9,12 @@ const profile = () => {
   const { state } = useContext(AppContext);
 
   return (
-    <SafeAreaView>
+    <View style={{ flex: 1,
+        
+    }}>
       <ProfileScreen/>
       {/* <Text>Profile</Text> */}
-    </SafeAreaView>
+      </View>
   )
 }
 

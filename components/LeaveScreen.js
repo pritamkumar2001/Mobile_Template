@@ -7,6 +7,7 @@ import { Link, useRouter } from "expo-router";
 import ModalComponent from '../components/ModalComponent';
 import ModalComponentCancel from '../components/ModalComponentCancel';
 import { getEmpLeave } from './services/productServices';
+import HeaderComponent from './HeaderComponent';
 
 // Container for the whole screen
 const Container = styled.View`
@@ -221,6 +222,10 @@ const LeaveScreen = () => {
     });
   };
 
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
   const count = leaveData.length
   console.log(count)
 
@@ -315,6 +320,8 @@ const LeaveScreen = () => {
   };
   
   return (
+    <>
+      <HeaderComponent headerTitle="My Leaves" onBackPress={handleBackPress} />
       <Container>
         <Title>All Leaves</Title>
 
@@ -394,6 +401,7 @@ const LeaveScreen = () => {
       )}
 
       </Container>
+      </>
   );
 };
 

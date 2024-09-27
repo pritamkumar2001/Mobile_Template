@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import moment from 'moment';
@@ -9,10 +9,13 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { getProfileInfo } from './services/authServices';
+import { useNavigation, useRouter } from 'expo-router';
+import HeaderComponent from './HeaderComponent';
 
 const Container = styled.View`
   flex: 1;
   padding: 20px;
+  padding-top: 20px;
   background-color: #fff;
 `;
 
@@ -83,6 +86,20 @@ const AddAttendance = () => {
   const [fileMimeType, setFileMimeType] = useState('');
   const [imgMode, setImgMode] = useState('');
   const [checkedIn, setCheckedIn] = useState(false); // Tracks check-in status
+
+  const navigation = useNavigation();
+
+  const router = useRouter();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
 
   useEffect(() => {
     const date = moment().format('DD/MM/YYYY');
@@ -155,7 +172,11 @@ const AddAttendance = () => {
   };
 
   return (
+    <>
+    <HeaderComponent headerTitle="Attendance" onBackPress={handleBackPress} />
     <Container>
+      
+    
       <Header>Add Attendance</Header>
       <Label>Date: {currentDate}</Label>
       <Label>Time: {currentTime}</Label>
@@ -181,6 +202,7 @@ const AddAttendance = () => {
         <CheckStatusText>Check Status</CheckStatusText>
       </CheckStatusButton>
     </Container>
+    </>
   );
 };
 

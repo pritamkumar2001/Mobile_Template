@@ -130,9 +130,7 @@ const HomePage = () => {
     };
 
     const handlePressAttendance = () => {
-      router.push({
-        pathname: 'AttendanceScreen' 
-      });
+      router.push('attendance');
     };
 
   return (
