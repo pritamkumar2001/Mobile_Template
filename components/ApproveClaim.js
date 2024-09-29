@@ -164,8 +164,7 @@ const ApproveClaim = () => {
     <>
       <HeaderComponent headerTitle="Approve Claim" onBackPress={handleBackPress} />
       <Container>
-        <Title>Approve Claims</Title>
-
+        {/* <Title>Approve Claims</Title> */}
         {/* Search Bar */}
         <SearchContainer>
           <MaterialIcons name="search" size={24} color="#888" />

@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, Platform, StatusBar, ScrollVie
 import styled from 'styled-components/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from 'expo-router';
 import { postEmpLeave } from './services/productServices';
 
@@ -51,7 +50,7 @@ const ApplyLeave = (props) => {
       call_mode,
     };
 
-    console.log(leavePayload, 'data--->');
+    // console.log(leavePayload, 'data--->');
     postEmpLeave(leavePayload)
       .then((res) => {
         alert('Leave applied successfully');
@@ -64,7 +63,7 @@ const ApplyLeave = (props) => {
   };
 
   // Styled Components
-  const Container = styled(SafeAreaView)`
+  const Container = styled.View`
     flex: 1;
     padding: 10px;
     background-color: #fff;
@@ -154,9 +153,7 @@ const ApplyLeave = (props) => {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-        <Container>
+       <Container>
           {/* <StatusBar barStyle={'light-content'} backgroundColor={'#007bff'} /> */}
 
           {/* From Date */}
@@ -243,8 +240,6 @@ const ApplyLeave = (props) => {
             <SubmitButtonText>SUBMIT</SubmitButtonText>
           </SubmitButton>
         </Container>
-      </ScrollView>
-    </KeyboardAvoidingView>
   );
 };
 

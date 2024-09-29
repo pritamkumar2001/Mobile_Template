@@ -173,7 +173,7 @@ const AddAttendance = () => {
 
   return (
     <>
-    <HeaderComponent headerTitle="Attendance" onBackPress={handleBackPress} />
+    <HeaderComponent headerTitle="My Attendance" onBackPress={handleBackPress} />
     <Container>
       
     

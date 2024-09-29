@@ -12,6 +12,7 @@ import HeaderComponent from './HeaderComponent';
 // Container for the whole screen
 const Container = styled.View`
   padding: 16px;
+  height: 100%;
   background-color: #fff;
 `;
 
@@ -80,7 +81,7 @@ const ApplicationList = styled.ScrollView.attrs({
   showsHorizontalScrollIndicator: false,  // Hide horizontal scrollbar
 })`
   margin-top: 20px;
-  margin-bottom: auto;
+  margin-bottom: 100px;
 `;
 
 const ApplicationCard = styled.TouchableOpacity`
@@ -256,7 +257,7 @@ const LeaveScreen = () => {
         onPress={() => handleCardPress(leave)}
       >
         <ApplicationStatusContainer>
-        <StatusBar barStyle={'light-content'} backgroundColor={'#a970ff'} />
+        {/* <StatusBar barStyle={'light-content'} backgroundColor={'#a970ff'} /> */}
           <View>
           <DetailText>Date: {leave.from_date} to {leave.to_date}</DetailText>
           <DetailText>
@@ -323,7 +324,7 @@ const LeaveScreen = () => {
     <>
       <HeaderComponent headerTitle="My Leaves" onBackPress={handleBackPress} />
       <Container>
-        <Title>All Leaves</Title>
+        {/* <Title>All Leaves</Title> */}
 
         {/* Leave Cards Section */}
         <CardRow>
@@ -382,7 +383,6 @@ const LeaveScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}  // Hide the scrollbar
       />
-
         </ApplicationList>
         {selectedLeave && (
         <ModalComponent

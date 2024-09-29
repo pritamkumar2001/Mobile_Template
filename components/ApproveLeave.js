@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons'; // For icons
@@ -9,9 +9,11 @@ import ModalComponentApprove from './ModalComponentApprove';
 import ModalComponentReject from './ModalComponentReject';
 import SuccessModal from './SuccessModal'
 import {getEmpLeave} from './services/productServices'
+import HeaderComponent from './HeaderComponent';
 // Container for the whole screen
 const Container = styled.View`
   padding: 16px;
+  height: 100%;
   background-color: #fff;
 `;
 
@@ -166,6 +168,7 @@ const LeaveScreen = () => {
   const [isApproveModalVisible, setApproveModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
   const [selectedTab, setSelectedTab] = useState('Approve Leave');
+  
   // const handlePress = () => {
   //   router.push('/LeaveApply'); 
   // };
@@ -198,6 +201,17 @@ const LeaveScreen = () => {
     setSelectedLeave(leave);
     console.log(leave)
     setApproveModalVisible(true);
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
+
+  const handleBackPress = () => {
+    navigation.goBack();
   };
 
 
@@ -287,15 +301,10 @@ const LeaveScreen = () => {
   };
   
   return (
+    <>
+    
+    <HeaderComponent headerTitle="Approve Leaves" onBackPress={handleBackPress} />
       <Container>
-        <Title>Approve Leaves</Title>
-
-        
-
-        
-      {/* <TabContainer>
-        <TabText>List Of Employees Leaves</TabText>
-      </TabContainer> */}
 
         {/* Application List Section */}
         <ApplicationList>
@@ -336,6 +345,7 @@ const LeaveScreen = () => {
         </>
       )}
       </Container>
+      </>
   );
 };
 

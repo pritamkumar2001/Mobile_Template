@@ -252,11 +252,7 @@ const AddClaim = () => {
 
   return (
     <>
-    <HeaderComponent headerTitle="Add Claim" onBackPress={handleBackPress} />
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-      
-      
+    <HeaderComponent headerTitle="Add Claim" onBackPress={handleBackPress} />  
     <Container>
     
       {/* <Title>Add Claim</Title> */}
@@ -347,8 +343,6 @@ const AddClaim = () => {
         <ButtonText>Submit</ButtonText>
       </SubmitButton>
     </Container>
-      </ScrollView>
-    </KeyboardAvoidingView>
     </>
   );
 };
@@ -357,8 +351,8 @@ export default AddClaim;
 
 const Container = styled.View`
   flex: 1;
-  padding: 20px;
-  padding-top: 50px;
+  padding: 10px;
+  /* padding-top: 50px; */
   background-color: #fff;
   height: 100%;
 `;
@@ -390,7 +384,7 @@ const Icon = styled.Image`
   `;
   const FieldContainer = styled.View`
   margin-bottom: 20px;
-  margin-top: auto;
+  margin-top: 5px;
 `;
 
 const Label = styled.Text`

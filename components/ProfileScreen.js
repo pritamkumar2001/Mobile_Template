@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AppContext } from '../context/AppContext';
 import { getProfileInfo } from '../components/services/authServices';
 import HeaderComponent from './HeaderComponent';
+import { useNavigation } from 'expo-router';
 
 // Styled components
 const Container = styled.View`
@@ -94,6 +95,10 @@ const ProfileScreen = () => {
   const [profile, setProfile] = useState({});
   const [isManager, setIsManager] = useState(false);
 
+  
+  const navigation = useNavigation(); // Access the navigation object
+  
+
   useEffect(() => {
     // Fetch profile data
     getProfileInfo().then((res) => {
@@ -102,22 +107,24 @@ const ProfileScreen = () => {
       setIsManager(res.data.user_group.is_manager);
     });
   }, []);
+
+  console.log(profile)
   const handleBackPress = () => {
     navigation.goBack();
   };
 
   return (
     <>
-    <HeaderComponent headerTitle="My Leaves" onBackPress={handleBackPress} />
+    <HeaderComponent headerTitle="My Profile" onBackPress={handleBackPress} />
     <Container>
-      <StatusBar style="auto" />
+      {/* <StatusBar style="auto" /> */}
       
       <AvatarContainer>
         {/* <MaterialCommunityIcons name="account" size={70} color="#5D5D5D" /> */}
         <ProfileImage source={{ uri: profile.image }} />
       </AvatarContainer>
       <UserName>{profile&&profile?.emp_data?.name}</UserName>
-      <UserName>ADMIN@PMA_00001</UserName>
+      <UserName>{profile&&profile?.user_name}</UserName>
 
       <IsManagerContainer>
         <ManagerText>Is Manager:</ManagerText>
@@ -128,7 +135,7 @@ const ProfileScreen = () => {
       </IsManagerContainer>
 
       <InfoText>Employee Id : {profile?.emp_data?.emp_id}</InfoText>
-      <InfoText>Department : BLR OFFICE</InfoText>
+      <InfoText>Department : {profile?.emp_data?.department_name}</InfoText>
 
       <LogOutButton onPress={() => {logout()}}>
         <MaterialCommunityIcons name="logout" size={24} color="red" />

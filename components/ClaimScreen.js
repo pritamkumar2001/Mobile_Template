@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList, StatusBar, View } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons'; // For icons
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { getEmpClaim } from './services/productServices';
+import HeaderComponent from './HeaderComponent';
 
 // Container for the whole screen
 const Container = styled.View`
@@ -79,6 +80,7 @@ const ClaimStatusContainer = styled.View`
 const ClaimScreen = () => {
   const router = useRouter();
   const [claimData, setClaimData] = useState([]);
+  const navigation = useNavigation();
   const requestData = 'GET'
 
   useEffect(() => {
@@ -90,6 +92,16 @@ const ClaimScreen = () => {
       setClaimData(res.data);
       // console.log(res.data);
     });
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
+
+  const handleBackPress = () => {
+    navigation.goBack();
   };
 
   const handlePress = () => {
@@ -116,8 +128,11 @@ const ClaimScreen = () => {
   };
 
   return (
+    <>
+    <HeaderComponent headerTitle="My Claim" onBackPress={handleBackPress} />
+      
     <Container>
-      <Title>My Claims</Title>
+      {/* <Title>My Claims</Title> */}
 
       {/* Claim List Section */}
       <FlatList
@@ -133,6 +148,7 @@ const ClaimScreen = () => {
         <ButtonText>Apply Claim</ButtonText>
       </ApplyClaimButton>
     </Container>
+    </>
   );
 };
 
