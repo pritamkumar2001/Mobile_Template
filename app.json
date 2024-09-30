@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "hr-app",
-    "slug": "hr-app",
-    "version": "1.0.0",
+    "slug": "atomwalkhrms",
+    "version": "1.0.2",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/adaptive-icons.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -16,10 +16,12 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode": 4,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-icons.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.atomwalk.atomwalkhrms"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +33,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "89217bf7-63e3-4e7f-b6a3-7bdb2586c80f"
+      }
+    },
+    "owner": "atomwalk"
   }
 }

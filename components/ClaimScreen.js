@@ -111,9 +111,7 @@ const ClaimScreen = () => {
   };
 
   const handlePress = () => {
-    router.push({
-      pathname: 'ClaimApply',
-    });
+    router.push('ClaimApply');
   };
 
   const handleViewFile = (fileUrl) => {

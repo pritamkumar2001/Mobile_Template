@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, StatusBar, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons'; // For icons
-import { useNavigation } from '@react-navigation/native';
-import { Link, useRouter } from "expo-router";
+// import { useNavigation } from '@react-navigation/native';
+import { Link, useRouter,useNavigation } from "expo-router";
 import ModalComponent from '../components/ModalComponent';
 import ModalComponentCancel from '../components/ModalComponentCancel';
 import { getEmpLeave } from './services/productServices';
@@ -189,7 +189,7 @@ const LeaveScreen = () => {
 
   const handlePress = (leave) => {
     router.push({
-      pathname: 'LeaveApply',
+      pathname: '/LeaveApply',
       params: leave,  // Pass leave data as params
     });
   };
@@ -339,7 +339,7 @@ const LeaveScreen = () => {
         </CardRow>
 
         {/* Apply Leave Button */}
-        <ApplyLeaveButton onPress={() => handlePress(leaveData[0]?.emp_data)}>
+        <ApplyLeaveButton onPress={() => handlePress(leaveData&&leaveData[0]?.emp_data)}>
           <MaterialIcons name="add-circle" size={24} color="#fff" />
           <ButtonText>Apply Leave</ButtonText>
         </ApplyLeaveButton>
