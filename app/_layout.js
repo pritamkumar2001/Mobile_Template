@@ -1,4 +1,3 @@
-import LeaveScreen from "@/components/LeaveScreen";
 import { Stack } from "expo-router";
 import {AppProvider} from '../context/AppContext'
 
@@ -10,7 +9,7 @@ export default function RootLayout() {
       <Stack.Screen name="index"/>
       <Stack.Screen name="(tabs)" options={{headerShown:false}}></Stack.Screen>
       <Stack.Screen name="AuthScreen/index" options={{headerShown:false}}/> 
-      <Stack.Screen name="LeaveApply/index" options={{headerShown:true}}/>
+      <Stack.Screen name="LeaveApply/index" options={{headerShown:false}}/>
     </Stack>
     
     </AppProvider>
