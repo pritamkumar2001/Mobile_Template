@@ -198,7 +198,7 @@ const AddAttendance = () => {
           </Button>
         )}
       </AttendanceCard>
-      <CheckStatusButton>
+      <CheckStatusButton >
         <CheckStatusText>Check Status</CheckStatusText>
       </CheckStatusButton>
     </Container>

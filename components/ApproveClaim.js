@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, View, TextInput } from 'react-native';
+import { FlatList, View, TextInput, Linking } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRouter } from 'expo-router';
@@ -72,6 +72,13 @@ const ActionButton = styled.TouchableOpacity`
   margin-top: 10px;
 `;
 
+const ApproveButton = styled.TouchableOpacity`
+  background-color: #4d88ff;
+  padding: 10px 20px;
+  border-radius: 24px;
+  margin-top: 10px;
+`;
+
 // Action button text
 const ButtonText = styled.Text`
   color: #fff;
@@ -131,6 +138,10 @@ const ApproveClaim = () => {
     // You can also add logic to filter the claims based on searchQuery.
   };
 
+  const handleViewFile = (fileUrl) => {
+    Linking.openURL(fileUrl).catch((err) => console.error("Failed to open URL:", err));
+  };
+
   const renderClaimItem = ({ item }) => (
     <ClaimCard>
       <ClaimStatusContainer>
@@ -147,15 +158,22 @@ const ApproveClaim = () => {
 
       <ClaimStatusContainer>
         {/* View Button */}
-        <ViewButton onPress={() => { /* Add navigation to details page */ }}>
+        <ViewButton onPress={() => handleViewFile(item.submitted_file_1)}>
           <MaterialIcons name="visibility" size={20} color="#333" />
-          <ClaimText style={{ marginLeft: 5 }}>View</ClaimText>
+          <ClaimText style={{ marginLeft: 5 }}>View File</ClaimText>
         </ViewButton>
 
-        {/* Action Button */}
+        
+        {/*Action Button */}
         <ActionButton onPress={() => { /* Handle action click */ }}>
           <ButtonText>Action</ButtonText>
         </ActionButton>
+
+        {/* Action Button */}
+        <ApproveButton onPress={() => { /* Handle action click */ }}>
+          <ButtonText>Approve</ButtonText>
+        </ApproveButton>
+
       </ClaimStatusContainer>
     </ClaimCard>
   );
@@ -164,7 +182,6 @@ const ApproveClaim = () => {
     <>
       <HeaderComponent headerTitle="Approve Claim" onBackPress={handleBackPress} />
       <Container>
-        {/* <Title>Approve Claims</Title> */}
         {/* Search Bar */}
         <SearchContainer>
           <MaterialIcons name="search" size={24} color="#888" />

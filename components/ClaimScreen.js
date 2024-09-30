@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, StatusBar, View } from 'react-native';
+import { FlatList, StatusBar, View, SafeAreaView, Linking } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons'; // For icons
 import { useNavigation, useRouter } from 'expo-router';
@@ -8,25 +8,17 @@ import HeaderComponent from './HeaderComponent';
 
 // Container for the whole screen
 const Container = styled.View`
-height: 100%;
+  flex: 1;
   padding: 10px;
   background-color: #fff;
 `;
 
-// Title for the claims section
-const Title = styled.Text`
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
 // Card container for claim information
-const ClaimCard = styled.TouchableOpacity`
-  background-color: ${props => props.bgColor || '#fff'};
+const ClaimCard = styled.View`
+  background-color: #e1d7f5;
   border-radius: 12px;
   border-width: 1px;
-  border-color: ${props => props.borderColor || '#ddd'};
+  border-color: #ccc;
   padding: 16px;
   margin-bottom: 12px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -37,14 +29,22 @@ const ClaimText = styled.Text`
   font-size: 16px;
   color: #333;
   font-weight: 500;
+  margin-bottom: 4px;
+`;
+
+const ClaimAmountContainer = styled.View`
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  background-color: #fff5e6;
+  padding: 4px 8px;
+  border-radius: 8px;
 `;
 
 const ClaimAmountText = styled.Text`
   font-size: 15px;
   font-weight: bold;
-  color: ${props => props.color || '#000'};
-  margin-top: 5px;
-  margin-bottom: 5px;
+  color: #ff8800;
 `;
 
 // Button for applying a new claim
@@ -58,6 +58,18 @@ const ApplyClaimButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
+// View button styles
+const ViewButton = styled.TouchableOpacity`
+  background-color: #fff;
+  border: 1px solid #4d88ff;
+  border-radius: 24px;
+  padding: 8px 16px;
+  flex-direction: row;
+  align-items: center;
+  align-self: flex-start;
+  margin-top: 12px;
+`;
+
 const ButtonText = styled.Text`
   color: #fff;
   font-size: 16px;
@@ -65,23 +77,18 @@ const ButtonText = styled.Text`
   margin-left: 8px;
 `;
 
-// Claim details container
-const ClaimDetails = styled.View`
-  margin-top: 10px;
-`;
-
-// StatusBar styled component for each claim
-const ClaimStatusContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+const ViewButtonText = styled.Text`
+  color: #4d88ff;
+  font-size: 14px;
+  font-weight: 600;
+  margin-left: 4px;
 `;
 
 const ClaimScreen = () => {
   const router = useRouter();
   const [claimData, setClaimData] = useState([]);
   const navigation = useNavigation();
-  const requestData = 'GET'
+  const requestData = 'GET';
 
   useEffect(() => {
     fetchClaimDetails();
@@ -90,7 +97,6 @@ const ClaimScreen = () => {
   const fetchClaimDetails = () => {
     getEmpClaim(requestData).then((res) => {
       setClaimData(res.data);
-      // console.log(res.data);
     });
   };
 
@@ -110,45 +116,54 @@ const ClaimScreen = () => {
     });
   };
 
-  const renderClaimItem = ({ item }) => {
-    return (
-      <ClaimCard bgColor="#E1D7F5" borderColor="#ccc">
-        <ClaimStatusContainer>
-          <View>
-            <ClaimText>Claim ID: {item.claim_id}</ClaimText>
-            <ClaimText>Item Name: {item.item_name}</ClaimText>
-            <ClaimText>Expense Date: {item.expense_date}</ClaimText>
-          </View>
-          <View>
-            <ClaimAmountText color="#007bff">₹ {item.expense_amt}</ClaimAmountText>
-          </View>
-        </ClaimStatusContainer>
-      </ClaimCard>
-    );
+  const handleViewFile = (fileUrl) => {
+    Linking.openURL(fileUrl).catch((err) => console.error("Failed to open URL:", err));
   };
 
+  const handleViewPress = (claimId) => {
+    // Handle the view button press (e.g., navigate to a detailed view)
+    console.log(`View claim with ID: ${claimId}`);
+  };
+
+  const renderClaimItem = ({ item }) => (
+    <ClaimCard>
+      <View>
+        <ClaimText>Emp ID: {item.emp_id}</ClaimText>
+        <ClaimText>Item Name: {item.item_name}</ClaimText>
+        <ClaimText>Claim ID: {item.claim_id}</ClaimText>
+        <ClaimText>Expense Date: {item.expense_date}</ClaimText>
+      </View>
+      <ClaimAmountContainer>
+        <ClaimAmountText>₹ {item.expense_amt}</ClaimAmountText>
+      </ClaimAmountContainer>
+      <ViewButton onPress={() => handleViewFile(item.submitted_file_1)}>
+        <MaterialIcons name="visibility" size={20} color="#4d88ff" />
+        <ViewButtonText>View File</ViewButtonText>
+      </ViewButton>
+    </ClaimCard>
+  );
+
   return (
-    <>
-    <HeaderComponent headerTitle="My Claim" onBackPress={handleBackPress} />
-      
-    <Container>
-      {/* <Title>My Claims</Title> */}
+    <SafeAreaView style={{ flex: 1 }}>
+      <HeaderComponent headerTitle="My Claim" onBackPress={handleBackPress} />
 
-      {/* Claim List Section */}
-      <FlatList
-        data={claimData}
-        renderItem={renderClaimItem}
-        keyExtractor={(item) => item.claim_id.toString()}
-        showsVerticalScrollIndicator={false}  // Hide scrollbar
-      />
-
-      {/* Apply Claim Button */}
+      <Container>
+        <FlatList
+          data={claimData}
+          renderItem={renderClaimItem}
+          keyExtractor={(item) => item.claim_id.toString()}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 100 }} // Extra padding for the button
+        />
+        {/* Apply Claim Button */}
       <ApplyClaimButton onPress={handlePress}>
         <MaterialIcons name="add-circle" size={24} color="#fff" />
         <ButtonText>Apply Claim</ButtonText>
       </ApplyClaimButton>
-    </Container>
-    </>
+      </Container>
+
+      
+    </SafeAreaView>
   );
 };
 
