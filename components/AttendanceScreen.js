@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import moment from 'moment';
 import { Camera } from 'expo-camera';
+import * as Location from 'expo-location';
 
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -79,16 +80,13 @@ const AddAttendance = () => {
     designation: 'Position',
   });
   const [hasPermission, setHasPermission] = useState(null);
-  const [cameraVisible, setCameraVisible] = useState(false);
-  const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState('');
-  const [fileUri, setFileUri] = useState('');
-  const [fileMimeType, setFileMimeType] = useState('');
-  const [imgMode, setImgMode] = useState('');
-  const [checkedIn, setCheckedIn] = useState(false); // Tracks check-in status
-
+  const [checkedIn, setCheckedIn] = useState(false);
+  const [attendanceData, setAttendanceData] = useState({
+    latitude: null,
+    longitude: null,
+  });
+  console.log('Check-In', attendanceData);
   const navigation = useNavigation();
-
   const router = useRouter();
 
   useLayoutEffect(() => {
@@ -125,83 +123,62 @@ const AddAttendance = () => {
     return <Text>No access to camera</Text>;
   }
 
-  const handleFilePick = async () => {
-    try {
-      Alert.alert(
-        'Face-Id Verification',
-        'Click On the capture photo to submit your face-id',
-        [
-          {
-            text: 'Capture Photo',
-            onPress: async () => {
-              const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
-              if (cameraPermission.granted) {
-                let result = await ImagePicker.launchCameraAsync({
-                  mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                  allowsEditing: true,
-                  quality: 1,
-                  cameraType: ImagePicker.CameraType.front, // Use front camera
-                });
-
-                if (!result.canceled) {
-                  setFileName(result.assets[0].fileName);
-                  setFileUri(result.assets[0].uri);
-                  setFileMimeType(result.assets[0].mimeType);
-                  setImgMode('camera');
-                  setCheckedIn(true); // Set check-in state to true after capturing image
-
-                  
-                }
-              } else {
-                alert('Camera permission is required to capture photos');
-              }
-            },
-          },
-          console.log('Face Data------>',fileName,fileMimeType,fileUri)
-        ],
-        
-        { cancelable: true }
-      );
-    } catch (err) {
-      alert('You have not selected a file. So, Please select a file.');
+  const handleCheckIn = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'Location permission is required to check in.');
+      return;
     }
+
+    const location = await Location.getCurrentPositionAsync({});
+    setAttendanceData({
+      latitude: location?.coords?.latitude,
+      longitude: location?.coords?.longitude,
+    });
+
+    setCheckedIn(true); // Set check-in status to true
   };
 
   const handleCheckOut = () => {
     // Logic for check-out
   };
 
+  const handlePressStatus = () => {
+    router.push({
+      pathname: 'AttendanceStatusDisplay',
+      params: employeeData?.emp_data,
+    });
+  };
+
   return (
     <>
-    <HeaderComponent headerTitle="My Attendance" onBackPress={handleBackPress} />
-    <Container>
-      
-    
-      <Header>Add Attendance</Header>
-      <Label>Date: {currentDate}</Label>
-      <Label>Time: {currentTime}</Label>
-      <Image
-        source={{ uri: `${employeeData && employeeData?.image}` }}
-        style={{ width: 60, height: 60, borderRadius: 30 }}
-      />
-      <Value>Emp-Id: {employeeData && employeeData?.emp_data?.emp_id}</Value>
-      <Value>Designation: {employeeData && employeeData?.emp_data?.grade_name}</Value>
-      <AttendanceCard>
-        <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>Attendance</Text>
-        <Button onPress={handleFilePick} checked={checkedIn}>
-          <ButtonText>{checkedIn ? 'Checked-In' : 'CHECK IN'}</ButtonText>
-        </Button>
-        
-        {checkedIn && (
-          <Button onPress={handleCheckOut}>
-            <ButtonText>CHECK OUT</ButtonText>
+      <HeaderComponent headerTitle="My Attendance" onBackPress={handleBackPress} />
+      <Container>
+        <Header>Add Attendance</Header>
+        <Label>Date: {currentDate}</Label>
+        <Label>Time: {currentTime}</Label>
+        <Image
+          source={{ uri: `${employeeData && employeeData?.image}` }}
+          style={{ width: 60, height: 60, borderRadius: 30 }}
+        />
+        <Value>Emp-Id: {employeeData && employeeData?.emp_data?.emp_id}</Value>
+        <Value>Designation: {employeeData && employeeData?.emp_data?.grade_name}</Value>
+        <AttendanceCard>
+          <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>Attendance</Text>
+          <Button onPress={handleCheckIn} checked={checkedIn}>
+            <ButtonText>{checkedIn ? 'Checked-In' : 'CHECK IN'}</ButtonText>
           </Button>
-        )}
-      </AttendanceCard>
-      <CheckStatusButton >
-        <CheckStatusText>Check Status</CheckStatusText>
-      </CheckStatusButton>
-    </Container>
+
+          {checkedIn && (
+            <Button onPress={handleCheckOut}>
+              <ButtonText>CHECK OUT</ButtonText>
+            </Button>
+          )}
+        </AttendanceCard>
+        <CheckStatusButton onPress={handlePressStatus}>
+          <CheckStatusText>Check Status</CheckStatusText>
+        </CheckStatusButton>
+      </Container>
     </>
   );
 };

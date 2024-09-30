@@ -60,3 +60,4 @@ export const addClaim = `${endpoint}/add_claim/${db_name}/`;
 export const getEmpClaimdata = `${endpoint}/get_claim_list/${db_name}/`;
 export const getExpenseItemList = `${endpoint}/expense_item_list/${db_name}/`;
 export const getProjectList = `${endpoint}/project_list/${db_name}/`;
+export const getEmpAttendanceData = `${endpoint}/get_employee_attendance/${db_name}/`;
