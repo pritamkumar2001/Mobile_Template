@@ -11,6 +11,123 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import HeaderComponent from './HeaderComponent';
 
+const Container = styled.View`
+  flex: 1;
+  padding: 10px;
+  /* padding-top: 50px; */
+  background-color: #fff;
+  height: 100%;
+`;
+
+const Title = styled.Text`
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  /* margin-top: 20px; */
+  font-weight: bold;
+`;
+
+const ClaimTypePicker = styled.View`
+    border-width: 1px;
+    border-color: #ccc;
+    border-radius: 5px;
+  `;
+
+const Input = styled.TextInput`
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  font-size: 16px;
+`;
+const Icon = styled.Image`
+    width: 24px;
+    height: 24px;
+  `;
+  const FieldContainer = styled.View`
+  margin-bottom: 20px;
+  margin-top: 5px;
+`;
+
+const Label = styled.Text`
+  font-size: 16px;
+  margin-bottom: 5px;
+`;
+
+const DatePickerButton = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-width: 1px;
+  border-color: #ccc;
+  padding: 10px;
+  border-radius: 5px;
+`;
+
+const DateText = styled.Text`
+  font-size: 16px;
+`;
+
+const pickerSelectStyles = {
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 2,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 5,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+};
+
+
+const InputText = styled.Text`
+  color: black;
+  font-size: 16px;
+  font-weight: normal;
+`;
+const TextArea = styled.TextInput`
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align-vertical: top;
+  /* margin-bottom: 15px; */
+  border-radius: 8px;
+  font-size: 16px;
+  /* height: 100px; */
+`;
+
+const FileButton = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  align-items: center;
+`;
+
+const SubmitButton = styled.TouchableOpacity`
+  background-color: #007bff;
+  padding: 15px;
+  border-radius: 8px;
+  align-items: center;
+  margin-top: 20px;
+`;
+
+const ButtonText = styled.Text`
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
 const AddClaim = () => {
   const [item, setItem] = useState('');
   const [project, setProject] = useState('')
@@ -348,120 +465,3 @@ const AddClaim = () => {
 };
 
 export default AddClaim;
-
-const Container = styled.View`
-  flex: 1;
-  padding: 10px;
-  /* padding-top: 50px; */
-  background-color: #fff;
-  height: 100%;
-`;
-
-const Title = styled.Text`
-  font-size: 24px;
-  text-align: center;
-  margin-bottom: 20px;
-  /* margin-top: 20px; */
-  font-weight: bold;
-`;
-
-const ClaimTypePicker = styled.View`
-    border-width: 1px;
-    border-color: #ccc;
-    border-radius: 5px;
-  `;
-
-const Input = styled.TextInput`
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  font-size: 16px;
-`;
-const Icon = styled.Image`
-    width: 24px;
-    height: 24px;
-  `;
-  const FieldContainer = styled.View`
-  margin-bottom: 20px;
-  margin-top: 5px;
-`;
-
-const Label = styled.Text`
-  font-size: 16px;
-  margin-bottom: 5px;
-`;
-
-const DatePickerButton = styled.TouchableOpacity`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border-width: 1px;
-  border-color: #ccc;
-  padding: 10px;
-  border-radius: 5px;
-`;
-
-const DateText = styled.Text`
-  font-size: 16px;
-`;
-
-const pickerSelectStyles = {
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 2,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 5,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-};
-
-
-const InputText = styled.Text`
-  color: black;
-  font-size: 16px;
-  font-weight: normal;
-`;
-const TextArea = styled.TextInput`
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align-vertical: top;
-  /* margin-bottom: 15px; */
-  border-radius: 8px;
-  font-size: 16px;
-  /* height: 100px; */
-`;
-
-const FileButton = styled.TouchableOpacity`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  align-items: center;
-`;
-
-const SubmitButton = styled.TouchableOpacity`
-  background-color: #007bff;
-  padding: 15px;
-  border-radius: 8px;
-  align-items: center;
-  margin-top: 20px;
-`;
-
-const ButtonText = styled.Text`
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-`;

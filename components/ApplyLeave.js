@@ -5,63 +5,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from 'expo-router';
 import { postEmpLeave } from './services/productServices';
-
-const ApplyLeave = (props) => {
-  const [fromDate, setFromDate] = useState(new Date());
-  const [toDate, setToDate] = useState(new Date());
-  const [showFromPicker, setShowFromPicker] = useState(false);
-  const [showToPicker, setShowToPicker] = useState(false);
-  const [remarks, setRemarks] = useState('');
-  const [leave_type, setLeave_type] = useState('EL');
-  const [numOfDays, setNumOfDays] = useState(0);
-  const call_mode = 'ADD';
-
-  const navigation = useNavigation();
-
-  // Function to calculate number of days between two dates
-  const calculateDays = useCallback((startDate, endDate) => {
-    const diffTime = Math.abs(endDate - startDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Added +1 to include both start and end dates
-    setNumOfDays(diffDays);
-  }, []);
-
-  // Function to handle applying leave
-  const addLeave = () => {
-    if (!fromDate || !toDate || !leave_type) {
-      alert('Please fill all required fields');
-      return;
-    }
-
-    if (toDate < fromDate) {
-      alert('To Date should be after From Date');
-      return;
-    }
-
-    const leavePayload = {
-      emp_id: props.id,
-      from_date: `${fromDate.getDate().toString().padStart(2, '0')}-${(fromDate.getMonth() + 1)
-        .toString()
-        .padStart(2, '0')}-${fromDate.getFullYear()}`,
-      to_date: `${toDate.getDate().toString().padStart(2, '0')}-${(toDate.getMonth() + 1)
-        .toString()
-        .padStart(2, '0')}-${toDate.getFullYear()}`,
-      remarks,
-      leave_type,
-      call_mode,
-    };
-
-    // console.log(leavePayload, 'data--->');
-    postEmpLeave(leavePayload)
-      .then((res) => {
-        alert('Leave applied successfully');
-        navigation.goBack(); // Navigate back after successful submission
-      })
-      .catch((error) => {
-        console.error(error);
-        alert('Failed to apply leave');
-      });
-  };
-
   // Styled Components
   const Container = styled.View`
     flex: 1;
@@ -151,6 +94,63 @@ const ApplyLeave = (props) => {
       paddingRight: 30, // to ensure the text is never behind the icon
     },
   };
+const ApplyLeave = (props) => {
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
+  const [showFromPicker, setShowFromPicker] = useState(false);
+  const [showToPicker, setShowToPicker] = useState(false);
+  const [remarks, setRemarks] = useState('');
+  const [leave_type, setLeave_type] = useState('EL');
+  const [numOfDays, setNumOfDays] = useState(0);
+  const call_mode = 'ADD';
+
+  const navigation = useNavigation();
+
+  // Function to calculate number of days between two dates
+  const calculateDays = useCallback((startDate, endDate) => {
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Added +1 to include both start and end dates
+    setNumOfDays(diffDays);
+  }, []);
+
+  // Function to handle applying leave
+  const addLeave = () => {
+    if (!fromDate || !toDate || !leave_type) {
+      alert('Please fill all required fields');
+      return;
+    }
+
+    if (toDate < fromDate) {
+      alert('To Date should be after From Date');
+      return;
+    }
+
+    const leavePayload = {
+      emp_id: props.id,
+      from_date: `${fromDate.getDate().toString().padStart(2, '0')}-${(fromDate.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${fromDate.getFullYear()}`,
+      to_date: `${toDate.getDate().toString().padStart(2, '0')}-${(toDate.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${toDate.getFullYear()}`,
+      remarks,
+      leave_type,
+      call_mode,
+    };
+
+    // console.log(leavePayload, 'data--->');
+    postEmpLeave(leavePayload)
+      .then((res) => {
+        alert('Leave applied successfully');
+        navigation.goBack(); // Navigate back after successful submission
+      })
+      .catch((error) => {
+        console.error(error);
+        alert('Failed to apply leave');
+      });
+  };
+
+
 
   return (
        <Container>
