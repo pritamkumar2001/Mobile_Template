@@ -40,20 +40,17 @@ const AttendanceButton = styled.View`
 `;
 
 const Button = styled.TouchableOpacity`
-  background-color: ${(props) => 
-    props.disabled && props.type === 'checkout' ? '#D12E2E' : // Red when Check-Out is disabled
-    props.checked || props.type === 'checkin' ? '#0EAE10' : '#ffffff'};
+  background-color: ${(props) =>
+    props.disabled ? (props.type === 'checkin' ? '#0EAE10' : '#D12E2E') : '#ffffff'};
   padding: 10px;
-  /* margin: 10px 0; */
   border-radius: 10px;
   align-items: center;
   flex-direction: row;
   border: 1px solid #007bff;
 `;
 
-
 const ButtonText = styled.Text`
-  color: white;
+  color: ${(props) => (props.disabled ? '#ffffff' : '#000000')};
   font-size: 12px;
 `;
 
@@ -105,12 +102,10 @@ const AddAttendance = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [checkedIn, setCheckedIn] = useState(false);
   const [startTime, setStartTime] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const navigation = useNavigation();
   const router = useRouter();
-
-  // console.log('Attendance Data----->', attData);
-  
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -127,7 +122,7 @@ const AddAttendance = () => {
     getProfileInfo().then((res) => {
       setEmployeeData(res.data);
     });
-  }, []);
+  }, [refreshKey]);
 
   useFocusEffect(
     useCallback(() => {
@@ -137,7 +132,7 @@ const AddAttendance = () => {
         year: moment().format('YYYY'),
       };
       fetchAttendanceDetails(data);
-    }, [employeeData])
+    }, [employeeData, refreshKey])
   );
 
   const fetchAttendanceDetails = (data) => {
@@ -148,10 +143,8 @@ const AddAttendance = () => {
   };
 
   const processAttendanceData = (data) => {
-    const todayAttendance = data.find(
-      (item) => item.a_date === currentDate
-    );
-  
+    const todayAttendance = data.find((item) => item.a_date === currentDate);
+
     if (todayAttendance) {
       setCheckedIn(todayAttendance.end_time === null);
       setStartTime(todayAttendance.start_time);
@@ -162,7 +155,6 @@ const AddAttendance = () => {
       setAttendance({});
     }
   };
-  
 
   const handleCheck = async (data) => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -170,22 +162,12 @@ const AddAttendance = () => {
       Alert.alert('Permission denied', 'Location permission is required to check.');
       return;
     }
-  
-    const location = await Location.getCurrentPositionAsync({});
-    // console.log('Location:', location);
-  
-    // Find the attendance record for the current date
-    const todayAttendance = attData.find((item) => item.a_date === currentDate);
-  
-    // If attendance record exists, use its ID, otherwise set a default ID or handle the error
-    const attendanceId = todayAttendance ? todayAttendance.id : null;
-  
-    if (!attendanceId) {
-      Alert.alert('Error', 'No attendance record found for today.');
-      return;
-    }
 
+    const location = await Location.getCurrentPositionAsync({});
   
+    const todayAttendance = attData.find((item) => item.a_date === currentDate);
+    const attendanceId = todayAttendance ? todayAttendance.id : null;
+
     const checkPayload = {
       emp_id: employeeData?.emp_data?.emp_id,
       call_mode: data,
@@ -198,25 +180,18 @@ const AddAttendance = () => {
       id: attendanceId,
     };
 
-    // console.log('Att Id ------',attendanceId)
-  
-    console.log('Check Payload:', checkPayload);
-  
     postCheckIn(checkPayload)
       .then((res) => {
         Alert.alert('Success', 'Action successfully completed');
-        console.log('Check Response:', res.data);
-        setCheckedIn(true);
+        setCheckedIn(data === 'ADD');
         setStartTime(currentTime);
+        setRefreshKey((prevKey) => prevKey + 1); // Refresh the page
       })
       .catch((error) => {
         console.error('Error:', error.response ? error.response.data : error.message);
         Alert.alert('Error', 'Failed to Check');
       });
   };
-
-  
-  
 
   const handlePressStatus = () => {
     router.push({
@@ -225,13 +200,10 @@ const AddAttendance = () => {
     });
   };
 
-  console.log('Attendace Dta per day-----',attendance)
-
   return (
     <>
       <HeaderComponent headerTitle="My Attendance" onBackPress={() => navigation.goBack()} />
       <Container>
-        {/* <Header>Add Attendance</Header> */}
         <Label>Date: {currentDate}</Label>
         <Label>Time: {currentTime}</Label>
         <EmpDataContainer>
@@ -249,30 +221,38 @@ const AddAttendance = () => {
         <AttendanceCard>
           <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>Attendance</Text>
           <AttendanceButton>
-          <Button
-            onPress={() => handleCheck('ADD')}
-            checked={checkedIn}
-            type="checkin" // Add type for Check-In
-            disabled={checkedIn || attendance.geo_status === 'O'}
-          >
-            <Entypo name="location-pin" size={24} color="white" />
-            <ButtonText>
-              {checkedIn || attendance.geo_status === 'O' ? `Checked-In at ${attendance.start_time}` : 'CHECK IN'}
-            </ButtonText>
-          </Button>
-          {checkedIn && (
             <Button
-              onPress={() => handleCheck('UPDATE')}
-              type="checkout" // Add type for Check-Out
-              disabled={attendance.geo_status === 'O'}
+              onPress={() => handleCheck('ADD')}
+              checked={checkedIn}
+              type="checkin"
+              disabled={checkedIn || attendance.geo_status === 'O'}
             >
-                <Feather name="log-out" size={24} color="white" />              
-                <ButtonText>
-                {attendance.geo_status === 'O' ? `Checked-Out at ${attendance.end_time}` : 'CHECK OUT'}
+              <Entypo
+                name="location-pin"
+                size={24}
+                color={checkedIn || attendance.geo_status === 'O' ? 'white' : 'black'}
+              />
+              <ButtonText disabled={checkedIn || attendance.geo_status === 'O'}>
+                {checkedIn || attendance.geo_status === 'O' ? `Checked-In at ${attendance.start_time}` : 'CHECK IN'}
               </ButtonText>
             </Button>
-          )}
-        </AttendanceButton>
+            {attendance.start_time && (
+              <Button
+                onPress={() => handleCheck('UPDATE')}
+                type="checkout"
+                disabled={attendance.geo_status === 'O'}
+              >
+                <Feather
+                  name="log-out"
+                  size={24}
+                  color={attendance.geo_status === 'O' ? 'white' : 'black'}
+                />
+                <ButtonText disabled={attendance.geo_status === 'O'}>
+                  {attendance.geo_status === 'O' ? `Checked-Out at ${attendance.end_time}` : 'CHECK OUT'}
+                </ButtonText>
+              </Button>
+            )}
+          </AttendanceButton>
         </AttendanceCard>
         <CheckStatusButton onPress={handlePressStatus}>
           <CheckStatusText>Check Status</CheckStatusText>
@@ -283,4 +263,3 @@ const AddAttendance = () => {
 };
 
 export default AddAttendance;
-
