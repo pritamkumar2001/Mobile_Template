@@ -425,7 +425,6 @@ const AddClaim = () => {
             />
           )}
         </FieldContainer>
-
         <Label>Attach File :</Label>
         <FileButton onPress={handleFilePick}>
           <InputText>{fileName}</InputText>

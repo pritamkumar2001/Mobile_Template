@@ -287,7 +287,7 @@ const AttendanceStatus = (props) => {
       
     <Container>
       <Header>
-        <HeaderText>Attendance Status</HeaderText>
+        {/* <HeaderText>Attendance Status</HeaderText> */}
       </Header>
       <CalendarContainer>
         <NavButtonContainer onPress={() => changeMonth(-1)}>

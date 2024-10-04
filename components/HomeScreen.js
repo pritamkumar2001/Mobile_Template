@@ -64,23 +64,30 @@ const HeaderImageContainer = styled.View`
 `;
 
 const LogoContainer = styled.View`
-  width: ${width * 0.25}px;  /* Responsive width */
+  width: ${width * 0.35}px;  /* Responsive width */
   height: ${width * 0.15}px;  /* Responsive height */
-  background-color: aliceblue;
+  /* background-color: aliceblue; */
   padding: 1px;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  border-radius: 5px;
+  border-radius: 20px;
 `;
 
 const Logo = styled.Image`
-  width: 95%;
-  height: 95%;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
 `;
 
 const HeaderContent = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const CompNameContainer = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
@@ -94,10 +101,10 @@ const HeaderText = styled.Text`
 `;
 
 const HeaderCompanyName = styled.Text`
-  color: white;
-  font-size: ${width * 0.07}px;  /* Responsive font size */
+  color: black;
+  font-size: ${width * 0.03}px;  /* Responsive font size */
   font-weight: bold;
-  text-align: center;
+  text-align: left;
 `;
 
 const IconContainer = styled.View`
@@ -194,12 +201,16 @@ const HomePage = () => {
         <HeaderImageContainer>
         <LogoContainer>
           <Logo source={{ uri: company.image }} />
+
         </LogoContainer>
+        
         <IconContainer>
+
           <ProfileIcon source={{ uri: profile.image }} />
         </IconContainer>
         </HeaderImageContainer>
-
+     {/* <HeaderCompanyName>fhrydhgdrhguirhguirhgruhhrthghtrg</HeaderCompanyName> */}
+        
         <HeaderContent>
           {/* <HeaderCompanyName>{company.name}</HeaderCompanyName> */}
           <HeaderText>Welcome to ATOMWALK HRM!</HeaderText>
