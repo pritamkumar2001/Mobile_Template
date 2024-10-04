@@ -202,14 +202,14 @@ const ApproveClaim = () => {
         )}
 
         {/* Action Button */}
-        <ActionButton onPress={() => { /* Handle action click */ }}>
+        {/* <ActionButton onPress={() => {}}>
           <ButtonText>Action</ButtonText>
-        </ActionButton>
+        </ActionButton> */}
 
         {/* Approve Button */}
-        <ApproveButton onPress={() => { /* Handle approve click */ }}>
+        {/* <ApproveButton onPress={() => {}}>
           <ButtonText>Approve</ButtonText>
-        </ApproveButton>
+        </ApproveButton> */}
       </ClaimStatusContainer>
     </ClaimCard>
   );
