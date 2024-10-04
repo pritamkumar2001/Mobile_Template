@@ -1,57 +1,22 @@
 import React, {useContext, useState, useEffect} from 'react';
-import { View, Text, Image, StatusBar, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StatusBar, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import {AppContext} from '../context/AppContext'
-import { getProfileInfo } from '../components/services/authServices'
+import { getCompanyInfo, getProfileInfo } from '../components/services/authServices'
 import { Link, useRouter } from "expo-router";
-// import LeaveScreen from '../components/LeaveScreen'
 
-// Styled components
+const { width, height } = Dimensions.get('window');
 const Container = styled.View`
   background-color: #f5f5f5;
-  /* padding: 20px; */
 `;
 
-const Header = styled.View`
-  background-color: #a970ff;
-  height: 250;
-  padding: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  align-items: last baseline;
-  justify-content: center;
-`;
-
-const HeaderText = styled.Text`
-  color: white;
-  width: 300px;
-  font-size: 30px;
-  font-weight: bold;
-`;
-
-const IconContainer = styled.View`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 70px;
-  height: 70px;
-  border-radius: 90px;
-  background-color: aliceblue;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ProfileIcon = styled.Image`
-  width: 60px;
-  height: 60px;
-  border-radius: 90px;
-`;
-
-const MenuContainer = styled.View`
-  flex: 1;
+const MenuContainer = styled(ScrollView)`
+  height: ${height * 0.6}px;  /* Set height to 60% of the screen height */
   margin-top: 30px;
   padding: 10px;
+`;
+
+const MenuWrapper = styled.View`
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-between;
@@ -59,25 +24,97 @@ const MenuContainer = styled.View`
 
 const MenuItem = styled.TouchableOpacity`
   width: 45%;
-  background-color: #DCD6E9;
-  padding: 30px;
+  height: ${height * 0.12}px;  /* Set height to 12% of screen height */
+  background-color: #dcd6e9;
+  padding: ${height * 0.02}px;
   border-radius: 15px;
   margin-bottom: 20px;
   align-items: center;
+  justify-content: center;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const MenuIcon = styled.Image`
-  width: 40px;
-  height: 40px;
+  width: ${width * 0.1}px;  /* Responsive width */
+  height: ${width * 0.1}px;  /* Responsive height */
   margin-bottom: 10px;
 `;
 
 const MenuText = styled.Text`
-  font-size: 16px;
+  font-size: ${width * 0.04}px;  /* Responsive font size */
   font-weight: bold;
   color: #333;
 `;
+
+const Header = styled.View`
+  background-color: #a970ff;
+  height: ${height * 0.3}px;  /* 30% of screen height */
+  padding: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+`;
+const HeaderImageContainer = styled.View`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: row;
+`;
+
+const LogoContainer = styled.View`
+  width: ${width * 0.25}px;  /* Responsive width */
+  height: ${width * 0.15}px;  /* Responsive height */
+  background-color: aliceblue;
+  padding: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 5px;
+`;
+
+const Logo = styled.Image`
+  width: 95%;
+  height: 95%;
+`;
+
+const HeaderContent = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const HeaderText = styled.Text`
+  color: white;
+  font-size: ${width * 0.06}px;  /* Responsive font size */
+  font-weight: bold;
+  text-align: center;
+`;
+
+const HeaderCompanyName = styled.Text`
+  color: white;
+  font-size: ${width * 0.07}px;  /* Responsive font size */
+  font-weight: bold;
+  text-align: center;
+`;
+
+const IconContainer = styled.View`
+  width: ${width * 0.15}px;  /* Responsive width */
+  height: ${width * 0.15}px;  /* Responsive height */
+  border-radius: ${width * 0.075}px;  /* Responsive border radius */
+  background-color: aliceblue;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ProfileIcon = styled.Image`
+  width: ${width * 0.12}px;  /* Responsive width */
+  height: ${width * 0.12}px;  /* Responsive height */
+  border-radius: ${width * 0.06}px;  /* Responsive border radius */
+`;
+
 
 
 
@@ -87,7 +124,9 @@ const HomePage = () => {
 
   const {logout, userToken} = useContext(AppContext);
     const [loading, setLoading] = useState(false);
-    const [profile, setProfile] = useState([])
+    const [profile, setProfile] = useState([]);
+    const [company, setCompany] = useState([])
+
     const [isManager, setIsManager] = useState(false)
     // console.log("data--->",profile)
 
@@ -105,6 +144,17 @@ const HomePage = () => {
           setLoading(false);
           setIsManager(false);
       });
+
+      getCompanyInfo()
+      .then((res) => {
+        // console.log(res.data)
+        setCompany(res.data);
+        setLoading(false);
+    })
+    .catch((error) => {
+        // console.log('error', error);
+        setLoading(false);
+    });
     }, []);
     
     const handlePressLeave = () => {
@@ -133,23 +183,34 @@ const HomePage = () => {
       router.push('attendance');
     };
 
+    // console.log('Company Data',company)
+
   return (
     <Container>
       
       <StatusBar barStyle={'light-content'} backgroundColor={'#a970ff'} />
       {/* Header */}
       <Header>
-        <HeaderText>Welcome to</HeaderText>
-        <HeaderText>ATOMWALK HRM !</HeaderText>
+        <HeaderImageContainer>
+        <LogoContainer>
+          <Logo source={{ uri: company.image }} />
+        </LogoContainer>
         <IconContainer>
-        <ProfileIcon source={{ uri: profile.image }} />
-        {/* <Image source={require('../assets/images/UserIcon.png')} style={{ width: 50, height: 50 }} /> */}
+          <ProfileIcon source={{ uri: profile.image }} />
         </IconContainer>
+        </HeaderImageContainer>
+
+        <HeaderContent>
+          {/* <HeaderCompanyName>{company.name}</HeaderCompanyName> */}
+          <HeaderText>Welcome to ATOMWALK HRM!</HeaderText>
+        </HeaderContent>
+
+        
       </Header>
 
       {/* Menu Items */}
       <MenuContainer>
-        
+      <MenuWrapper>
 
         <MenuItem onPress={() => handlePressLeave()}>
         <Image source={require('../assets/images/LeaveIcon.png')} style={{ width: 50, height: 50 }} />
@@ -185,6 +246,8 @@ const HomePage = () => {
           <MenuText>My Profile</MenuText>
         </MenuItem>
 
+
+       </MenuWrapper>
 
       </MenuContainer>
     </Container>

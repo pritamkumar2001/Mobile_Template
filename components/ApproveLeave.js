@@ -192,14 +192,14 @@ const LeaveScreen = () => {
   const rejectLeave = (leave) => {
     // Set selected leave and open the cancel modal
     setSelectedLeave(leave);
-    console.log(leave)
+    // console.log(leave)
     setRejectModalVisible(true);
   };
 
   const approveLeave = (leave) => {
     // Set selected leave and open the cancel modal
     setSelectedLeave(leave);
-    console.log(leave)
+    // console.log(leave)
     setApproveModalVisible(true);
   };
 
@@ -246,7 +246,7 @@ const LeaveScreen = () => {
   };
   const renderLeaveItem = ({ item: leave }) => {
     const { bgColor, color, borderColor, icon } = getStatusStyles(leave.status_display);
-  console.log(leave,"check")
+  // console.log(leave,"check")
     return (
       <ApplicationCard
         key={leave.id}

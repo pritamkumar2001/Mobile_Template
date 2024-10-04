@@ -1,4 +1,4 @@
-import { addEmpLeave, getEmpLeavedata, addClaim, getEmpClaimdata, getExpenseItemList, getProjectList, getEmpAttendanceData } from "../services/ConstantServies";
+import { addEmpLeave, getEmpLeavedata, addClaim, getEmpClaimdata, getExpenseItemList, getProjectList, getEmpAttendanceData, getEmpHolidayData, empCheckData } from "../services/ConstantServies";
 import { authAxios, authAxiosFilePost, authAxiosPost } from "./HttpMethod";
 
 export function getEmpLeave(leave_type , emp_id, year) {
@@ -32,7 +32,7 @@ export function getEmpLeave(leave_type , emp_id, year) {
     if (claim_data) {
       data = claim_data;
     }
-    console.log('Data to be sent:', claim_data);
+    // console.log('Data to be sent:', claim_data);
     return authAxiosFilePost(addClaim, claim_data)
   }
 
@@ -41,7 +41,7 @@ export function getEmpLeave(leave_type , emp_id, year) {
       'call_mode':res
     };
     
-    console.log(res)
+    // console.log(res)
     return authAxios(getEmpClaimdata, data)
   }
 
@@ -59,6 +59,24 @@ export function getEmpLeave(leave_type , emp_id, year) {
       'month':res.month,
       'year': res.year
     };
-    // console.log(data,'Final response data')
+    // console.log('Final response data',data)
     return authAxios(getEmpAttendanceData, data)
+  }
+
+  export function getEmpHoliday(res) {
+    let data = {
+      'year': res.year
+    };
+    // console.log(data,'Final response data')
+    return authAxios(getEmpHolidayData, data)
+  }
+
+  export function postCheckIn(checkin_data) {
+    let data = {};
+    if (checkin_data) {
+      data['attendance_data'] = checkin_data;
+      // data = checkin_data;
+    }
+    console.log('Data to be sent:', data);
+    return authAxiosPost(empCheckData, data)
   }

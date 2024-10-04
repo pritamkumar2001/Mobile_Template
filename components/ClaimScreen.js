@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, StatusBar, View, SafeAreaView, Linking } from 'react-native';
+import { FlatList, StatusBar, View, SafeAreaView, Linking, Alert, Image } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons'; // For icons
 import { useNavigation, useRouter } from 'expo-router';
@@ -84,9 +84,24 @@ const ViewButtonText = styled.Text`
   margin-left: 4px;
 `;
 
+// Container for the image viewer
+const ImageViewerContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+`;
+
+// Image styles
+const StyledImage = styled.Image`
+  width: 100%;
+  height: 100%;
+`;
+
 const ClaimScreen = () => {
   const router = useRouter();
   const [claimData, setClaimData] = useState([]);
+  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const navigation = useNavigation();
   const requestData = 'GET';
 
@@ -107,7 +122,11 @@ const ClaimScreen = () => {
   }, [navigation]);
 
   const handleBackPress = () => {
-    navigation.goBack();
+    if (selectedImageUrl) {
+      setSelectedImageUrl(null);
+    } else {
+      navigation.goBack();
+    }
   };
 
   const handlePress = () => {
@@ -115,18 +134,26 @@ const ClaimScreen = () => {
   };
 
   const handleViewFile = (fileUrl) => {
-    Linking.openURL(fileUrl).catch((err) => console.error("Failed to open URL:", err));
-  };
+    const fileExtension = fileUrl.split('.').pop().split('?')[0].toLowerCase();
 
-  const handleViewPress = (claimId) => {
-    // Handle the view button press (e.g., navigate to a detailed view)
-    console.log(`View claim with ID: ${claimId}`);
+    if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+      // Set the selected image URL to display the image
+      setSelectedImageUrl(fileUrl);
+    } else if (fileExtension === 'pdf') {
+      // Show alert and open the PDF URL for download
+      Alert.alert('File Downloading', 'The file is being downloaded.');
+      Linking.openURL(fileUrl).catch((err) =>
+        console.error('Failed to open URL:', err)
+      );
+    } else {
+      console.warn('Unsupported file type:', fileExtension);
+    }
   };
 
   const renderClaimItem = ({ item }) => (
     <ClaimCard>
       <View>
-        <ClaimText>Emp ID: {item.emp_id}</ClaimText>
+        {/* <ClaimText>Emp ID: {item.emp_id}</ClaimText> */}
         <ClaimText>Item Name: {item.item_name}</ClaimText>
         <ClaimText>Claim ID: {item.claim_id}</ClaimText>
         <ClaimText>Expense Date: {item.expense_date}</ClaimText>
@@ -134,12 +161,26 @@ const ClaimScreen = () => {
       <ClaimAmountContainer>
         <ClaimAmountText>₹ {item.expense_amt}</ClaimAmountText>
       </ClaimAmountContainer>
-      <ViewButton onPress={() => handleViewFile(item.submitted_file_1)}>
-        <MaterialIcons name="visibility" size={20} color="#4d88ff" />
-        <ViewButtonText>View File</ViewButtonText>
-      </ViewButton>
+      {/* Conditionally display the View File button if submitted_file_1 has a URL */}
+      {item.submitted_file_1 && (
+        <ViewButton onPress={() => handleViewFile(item.submitted_file_1)}>
+          <MaterialIcons name="visibility" size={20} color="#4d88ff" />
+          <ViewButtonText>View File</ViewButtonText>
+        </ViewButton>
+      )}
     </ClaimCard>
   );
+
+  if (selectedImageUrl) {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderComponent headerTitle="View Image" onBackPress={handleBackPress} />
+        <ImageViewerContainer>
+          <StyledImage source={{ uri: selectedImageUrl }} resizeMode="contain" />
+        </ImageViewerContainer>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -154,13 +195,11 @@ const ClaimScreen = () => {
           contentContainerStyle={{ paddingBottom: 100 }} // Extra padding for the button
         />
         {/* Apply Claim Button */}
-      <ApplyClaimButton onPress={handlePress}>
-        <MaterialIcons name="add-circle" size={24} color="#fff" />
-        <ButtonText>Apply Claim</ButtonText>
-      </ApplyClaimButton>
+        <ApplyClaimButton onPress={handlePress}>
+          <MaterialIcons name="add-circle" size={24} color="#fff" />
+          <ButtonText>Apply Claim</ButtonText>
+        </ApplyClaimButton>
       </Container>
-
-      
     </SafeAreaView>
   );
 };

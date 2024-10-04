@@ -2,98 +2,68 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Platform, StatusBar, ScrollView, KeyboardAvoidingView } from 'react-native';
 import styled from 'styled-components/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import RNPickerSelect from 'react-native-picker-select';
+import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from 'expo-router';
 import { postEmpLeave } from './services/productServices';
-  // Styled Components
-  const Container = styled.View`
-    flex: 1;
-    padding: 10px;
-    background-color: #fff;
-  `;
+import HeaderComponent from './HeaderComponent';
 
-  const FieldContainer = styled.View`
-    margin-bottom: 20px;
-  `;
-
-  const Label = styled.Text`
-    font-size: 16px;
-    margin-bottom: 5px;
-  `;
-
-  const DatePickerButton = styled.TouchableOpacity`
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    border-width: 1px;
-    border-color: #ccc;
-    padding: 10px;
-    border-radius: 5px;
-  `;
-
-  const DateText = styled.Text`
-    font-size: 16px;
-  `;
-
-  const Icon = styled.Image`
-    width: 24px;
-    height: 24px;
-  `;
-
-  const LeaveTypePicker = styled.View`
-    border-width: 1px;
-    border-color: #ccc;
-    border-radius: 5px;
-  `;
-
-  const RemarkInput = styled.TextInput`
-    border-width: 1px;
-    border-color: #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    height: 100px;
-    text-align-vertical: top;
-  `;
-
-  const SubmitButton = styled.TouchableOpacity`
-    background-color: #007bff;
-    padding: 15px;
-    border-radius: 5px;
-    align-items: center;
-  `;
-
-  const SubmitButtonText = styled.Text`
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-  `;
-  const TextArea = styled.TextInput`
-  border: 1px solid #ccc;
+// Styled Components
+const Container = styled.ScrollView`
+  flex: 1;
   padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  font-size: 16px;
-  height: 100px;
+  background-color: #fff;
 `;
 
-  const pickerSelectStyles = {
-    inputIOS: {
-      fontSize: 16,
-      paddingVertical: 12,
-      paddingHorizontal: 10,
-      borderWidth: 2,
-      color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
-    },
-    inputAndroid: {
-      fontSize: 16,
-      paddingHorizontal: 10,
-      paddingVertical: 8,
-      borderRadius: 5,
-      color: 'black',
-      paddingRight: 30, // to ensure the text is never behind the icon
-    },
-  };
+const FieldContainer = styled.View`
+  margin-bottom: 20px;
+`;
+
+const Label = styled.Text`
+  font-size: 16px;
+  margin-bottom: 5px;
+`;
+
+const DatePickerButton = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-width: 1px;
+  border-color: #ccc;
+  padding: 10px;
+  border-radius: 5px;
+`;
+
+const DateText = styled.Text`
+  font-size: 16px;
+`;
+
+const Icon = styled.Image`
+  width: 24px;
+  height: 24px;
+`;
+
+const RemarkInput = styled.TextInput`
+  border-width: 1px;
+  border-color: #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  height: 100px;
+  text-align-vertical: top;
+`;
+
+const SubmitButton = styled.TouchableOpacity`
+  background-color: #007bff;
+  padding: 15px;
+  border-radius: 5px;
+  align-items: center;
+`;
+
+const SubmitButtonText = styled.Text`
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
 const ApplyLeave = (props) => {
   const [fromDate, setFromDate] = useState(new Date());
   const [toDate, setToDate] = useState(new Date());
@@ -105,6 +75,9 @@ const ApplyLeave = (props) => {
   const call_mode = 'ADD';
 
   const navigation = useNavigation();
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
 
   // Function to calculate number of days between two dates
   const calculateDays = useCallback((startDate, endDate) => {
@@ -138,7 +111,6 @@ const ApplyLeave = (props) => {
       call_mode,
     };
 
-    // console.log(leavePayload, 'data--->');
     postEmpLeave(leavePayload)
       .then((res) => {
         alert('Leave applied successfully');
@@ -150,96 +122,97 @@ const ApplyLeave = (props) => {
       });
   };
 
-
-
   return (
-       <Container>
-          {/* <StatusBar barStyle={'light-content'} backgroundColor={'#007bff'} /> */}
-
-          {/* From Date */}
-          <FieldContainer>
-            <Label>From Date</Label>
-            <DatePickerButton onPress={() => setShowFromPicker(true)}>
-              <DateText>{fromDate.toDateString()}</DateText>
-              <Icon source={require('../assets/images/c-icon.png')} />
-            </DatePickerButton>
-            {showFromPicker && (
-              <DateTimePicker
-                value={fromDate}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || fromDate;
-                  setShowFromPicker(Platform.OS === 'ios');
-                  setFromDate(currentDate);
-                  calculateDays(currentDate, toDate);
-                }}
-              />
-            )}
-          </FieldContainer>
-
-          {/* To Date */}
-          <FieldContainer>
-            <Label>To Date</Label>
-            <DatePickerButton onPress={() => setShowToPicker(true)}>
-              <DateText>{toDate.toDateString()}</DateText>
-              <Icon source={require('../assets/images/c-icon.png')} />
-            </DatePickerButton>
-            {showToPicker && (
-              <DateTimePicker
-                value={toDate}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || toDate;
-                  setShowToPicker(Platform.OS === 'ios');
-                  setToDate(currentDate);
-                  calculateDays(fromDate, currentDate);
-                }}
-              />
-            )}
-          </FieldContainer>
-
-          {/* Remark */}
-          <FieldContainer>
-            <Label>Remark</Label>
-            <RemarkInput
-              placeholder="Remark :"
-              value={remarks}
-              onChangeText={(text) => setRemarks(text)}
+    <>
+      <HeaderComponent headerTitle="Apply Leave" onBackPress={handleBackPress} />
+      <Container>
+        {/* From Date */}
+        <FieldContainer>
+          <Label>From Date</Label>
+          <DatePickerButton onPress={() => setShowFromPicker(true)}>
+            <DateText>{fromDate.toDateString()}</DateText>
+            <Icon source={require('../assets/images/c-icon.png')} />
+          </DatePickerButton>
+          {showFromPicker && (
+            <DateTimePicker
+              value={fromDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={(event, selectedDate) => {
+                const currentDate = selectedDate || fromDate;
+                setShowFromPicker(Platform.OS === 'ios');
+                setFromDate(currentDate);
+                calculateDays(currentDate, toDate);
+              }}
             />
-            {/* <TextArea
-              placeholder="Remark :"
-              value={remarks}
-              onChangeText={setRemarks}
-              multiline
-              numberOfLines={4}
-            /> */}
-          </FieldContainer>
+          )}
+        </FieldContainer>
 
-          {/* Type of Leave */}
-          <FieldContainer>
-            <Label>Type of Leave</Label>
-            <LeaveTypePicker>
-              <RNPickerSelect
-                onValueChange={(value) => setLeave_type(value)}
-                value={leave_type}
-                items={[
-                  { label: 'Earned Leave', value: 'EL' },
-                  { label: 'Loss of Pay', value: 'LP' },
-                  { label: 'Work From Home', value: 'WH' },
-                ]}
-                placeholder={{ label: 'Select Type of Leave', value: null }}
-                style={pickerSelectStyles}
-              />
-            </LeaveTypePicker>
-          </FieldContainer>
+        {/* To Date */}
+        <FieldContainer>
+          <Label>To Date</Label>
+          <DatePickerButton onPress={() => setShowToPicker(true)}>
+            <DateText>{toDate.toDateString()}</DateText>
+            <Icon source={require('../assets/images/c-icon.png')} />
+          </DatePickerButton>
+          {showToPicker && (
+            <DateTimePicker
+              value={toDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={(event, selectedDate) => {
+                const currentDate = selectedDate || toDate;
+                setShowToPicker(Platform.OS === 'ios');
+                setToDate(currentDate);
+                calculateDays(fromDate, currentDate);
+              }}
+            />
+          )}
+        </FieldContainer>
 
-          {/* Submit Button */}
-          <SubmitButton onPress={addLeave}>
-            <SubmitButtonText>SUBMIT</SubmitButtonText>
-          </SubmitButton>
-        </Container>
+        {/* Remark */}
+        <FieldContainer>
+          <Label>Remark</Label>
+          <RemarkInput
+            placeholder="Remark :"
+            value={remarks}
+            onChangeText={(text) => setRemarks(text)}
+          />
+        </FieldContainer>
+
+        {/* Type of Leave */}
+        <FieldContainer>
+          <Label>Type of Leave</Label>
+          <Dropdown
+            data={[
+              { label: 'Earned Leave', value: 'EL' },
+              { label: 'Loss of Pay', value: 'LP' },
+              { label: 'Work From Home', value: 'WH' },
+            ]}
+            labelField="label"
+            valueField="value"
+            placeholder="Select Type of Leave"
+            value={leave_type}
+            onChange={(item) => {
+              setLeave_type(item.value);
+            }}
+            style={{
+              borderWidth: 1,
+              borderColor: '#ccc',
+              borderRadius: 5,
+              padding: 10,
+            }}
+            placeholderStyle={{ fontSize: 16, color: '#aaa' }}
+            selectedTextStyle={{ fontSize: 16, color: 'black' }}
+          />
+        </FieldContainer>
+
+        {/* Submit Button */}
+        <SubmitButton onPress={addLeave}>
+          <SubmitButtonText>SUBMIT</SubmitButtonText>
+        </SubmitButton>
+      </Container>
+    </>
   );
 };
 

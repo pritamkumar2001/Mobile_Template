@@ -103,12 +103,12 @@ const ProfileScreen = () => {
     // Fetch profile data
     getProfileInfo().then((res) => {
       setProfile(res.data);
-      console.log(res.data);
+      // console.log(res.data);
       setIsManager(res.data.user_group.is_manager);
     });
   }, []);
 
-  console.log(profile)
+  // console.log(profile)
   const handleBackPress = () => {
     navigation.goBack();
   };

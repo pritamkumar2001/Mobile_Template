@@ -12,7 +12,7 @@ const SuccessModal = ({ isVisible, onClose }) => {
           </IconContainer>
           <MessageContainer>
             <TitleText>Leave Rejected Successfully</TitleText>
-            <SubText>Your Leave has been rejected successfully</SubText>
+            <SubText>Leave has been rejected successfully</SubText>
           </MessageContainer>
           <DoneButton onPress={onClose}>
             <ButtonText>Done</ButtonText>

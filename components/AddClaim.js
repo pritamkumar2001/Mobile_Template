@@ -1,20 +1,19 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { View, TextInput, TouchableOpacity,Platform, Text, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, TextInput, TouchableOpacity, Platform, Text, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
 import styled from 'styled-components/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import { getExpenseItem, getExpenseProjectList, postClaim } from './services/productServices';
-import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation, useRouter } from 'expo-router';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { Dropdown } from 'react-native-element-dropdown';
 import HeaderComponent from './HeaderComponent';
 
-const Container = styled.View`
+const Container = styled.ScrollView`
   flex: 1;
   padding: 10px;
-  /* padding-top: 50px; */
   background-color: #fff;
   height: 100%;
 `;
@@ -23,15 +22,14 @@ const Title = styled.Text`
   font-size: 24px;
   text-align: center;
   margin-bottom: 20px;
-  /* margin-top: 20px; */
   font-weight: bold;
 `;
 
 const ClaimTypePicker = styled.View`
-    border-width: 1px;
-    border-color: #ccc;
-    border-radius: 5px;
-  `;
+  border-width: 1px;
+  border-color: #ccc;
+  border-radius: 5px;
+`;
 
 const Input = styled.TextInput`
   border: 1px solid #ccc;
@@ -40,11 +38,13 @@ const Input = styled.TextInput`
   border-radius: 8px;
   font-size: 16px;
 `;
+
 const Icon = styled.Image`
-    width: 24px;
-    height: 24px;
-  `;
-  const FieldContainer = styled.View`
+  width: 24px;
+  height: 24px;
+`;
+
+const FieldContainer = styled.View`
   margin-bottom: 20px;
   margin-top: 5px;
 `;
@@ -68,39 +68,18 @@ const DateText = styled.Text`
   font-size: 16px;
 `;
 
-const pickerSelectStyles = {
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 2,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 5,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
-};
-
-
 const InputText = styled.Text`
   color: black;
   font-size: 16px;
   font-weight: normal;
 `;
+
 const TextArea = styled.TextInput`
   border: 1px solid #ccc;
   padding: 10px;
   text-align-vertical: top;
-  /* margin-bottom: 15px; */
   border-radius: 8px;
   font-size: 16px;
-  /* height: 100px; */
 `;
 
 const FileButton = styled.TouchableOpacity`
@@ -111,7 +90,6 @@ const FileButton = styled.TouchableOpacity`
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 8px;
-  align-items: center;
 `;
 
 const SubmitButton = styled.TouchableOpacity`
@@ -130,22 +108,21 @@ const ButtonText = styled.Text`
 
 const AddClaim = () => {
   const [item, setItem] = useState('');
-  const [project, setProject] = useState('')
-  const [quantity, setQuantity] = useState(0)
-  const [expenseDate, setExpenseDate] = useState(new Date());  
+  const [project, setProject] = useState('');
+  const [quantity, setQuantity] = useState(0);
+  const [expenseDate, setExpenseDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [claimAmount, setClaimAmount] = useState('');
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState('')
-  const [fileUri, setFileUri] = useState('')
-  const [fileMimeType, setFileMimeType] = useState('')
-  const [imgMode,setImgMode] = useState('')
-  const [claimItem, setClaimItem] = useState([])
-  const [projectList, setProjectList] = useState([])
- 
-  const navigation = useNavigation();
+  const [fileName, setFileName] = useState('');
+  const [fileUri, setFileUri] = useState('');
+  const [fileMimeType, setFileMimeType] = useState('');
+  const [imgMode, setImgMode] = useState('');
+  const [claimItem, setClaimItem] = useState([]);
+  const [projectList, setProjectList] = useState([]);
 
+  const navigation = useNavigation();
   const router = useRouter();
 
   useLayoutEffect(() => {
@@ -154,29 +131,26 @@ const AddClaim = () => {
     });
   }, [navigation]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchClaimItemList();
     fetchProjectList();
-  },[])
+  }, []);
 
   const fetchClaimItemList = () => {
     getExpenseItem().then((res) => {
       setClaimItem(res.data);
-      // console.log(res.data)
-    });
-  };
-  const handleBackPress = () => {
-    navigation.goBack();
-  };
-  const fetchProjectList = () => {
-    getExpenseProjectList().then((res) => {
-      setProjectList(res.data);
-      // console.log(res.data)
     });
   };
 
-  // console.log('claim Items ----------',claimItem)
-  // console.log('Project List -----------',projectList)
+  const fetchProjectList = () => {
+    getExpenseProjectList().then((res) => {
+      setProjectList(res.data);
+    });
+  };
+
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
 
   const handleFilePick = async () => {
     try {
@@ -261,8 +235,7 @@ const AddClaim = () => {
       alert('You have not selected a file. So, Please select a file.');
     }
   };
-  
-  // Helper function to compress the image to a maximum size of 200 KB
+
   const compressImage = async (uri) => {
     let compressQuality = 1; // Start with the best quality
     let targetSize = 200 * 1024; // Target size between 100 and 150 KB
@@ -304,10 +277,10 @@ const AddClaim = () => {
   
     return compressedImage;
   };
-  
 
 
   const handleSubmit = () => {
+    // Form submission logic
     if (!claimAmount || !expenseDate ) {
       Alert.alert('Error', 'Please fill all fields and attach a valid file.');
       return;
@@ -363,103 +336,115 @@ const AddClaim = () => {
         console.error('Unexpected response:', error.response);
         alert(`Failed to claim: ${error.response?.data?.detail || error.message}`);
       });
-
-
   };
 
   return (
     <>
-    <HeaderComponent headerTitle="Add Claim" onBackPress={handleBackPress} />  
-    <Container>
-    
-      {/* <Title>Add Claim</Title> */}
-      
-      <FieldContainer>
-            <Label>Expense Item</Label>
+      <HeaderComponent headerTitle="Add Claim" onBackPress={handleBackPress} />
+      <Container>
+        <FieldContainer>
+          <Label>Expense Item</Label>
+          <ClaimTypePicker>
+            <Dropdown
+              data={claimItem.map((claim) => ({
+                label: claim.name,
+                value: claim.id,
+              }))}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Expense Item"
+              value={item}
+              onChange={(item) => setItem(item.value)}
+              style={{
+                padding: 10,
+              }}
+              placeholderStyle={{
+                color: '#ccc',
+                fontSize: 16,
+              }}
+              selectedTextStyle={{
+                fontSize: 16,
+              }}
+            />
+          </ClaimTypePicker>
+        </FieldContainer>
+
+        <Label>Claim Amount</Label>
+        <Input
+          placeholder="Claim Amount :"
+          keyboardType="numeric"
+          value={claimAmount}
+          onChangeText={setClaimAmount}
+        />
+
+        {projectList.length > 0 && (
+          <FieldContainer>
+            <Label>Project</Label>
             <ClaimTypePicker>
-              <RNPickerSelect
-                onValueChange={(value) => setItem(value)}
-                value={item}
-                items={claimItem.map((claim) => ({
-                  label: claim.name, 
-                  value: claim.id,
+              <Dropdown
+                data={projectList.map((project) => ({
+                  label: project.title,
+                  value: project.id,
                 }))}
-                placeholder={{ label: 'Select Expense Item', value: null }}
-                style={pickerSelectStyles}
-              />
-            </ClaimTypePicker>
-
-          </FieldContainer>
-
-          <Label>Claim Amount</Label>
-          <Input
-            placeholder="Claim Amount :"
-            keyboardType="numeric"
-            value={claimAmount}
-            onChangeText={setClaimAmount}
-          />
-
-            {projectList.length > 0 && (
-              <FieldContainer>
-                <Label>Project</Label>
-                <ClaimTypePicker>
-                  <RNPickerSelect
-                    onValueChange={(value) => setProject(value)}
-                    value={project}
-                    items={projectList.map((project) => ({
-                      label: project.title, 
-                      value: project.id,
-                    }))}
-                    placeholder={{ label: 'Select Project', value: null }}
-                    style={pickerSelectStyles}
-                  />
-                </ClaimTypePicker>
-              </FieldContainer>
-            )}
-
-      
-      
-      <FieldContainer>
-            <Label>From Date</Label>
-            <DatePickerButton onPress={() => setShowDatePicker(true)}>
-              <DateText>{expenseDate.toDateString()}</DateText>
-              <Icon source={require('../assets/images/c-icon.png')} />
-            </DatePickerButton>
-            {showDatePicker && (
-              <DateTimePicker
-                value={expenseDate}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || expenseDate;
-                  setShowDatePicker(Platform.OS === 'ios');
-                  setExpenseDate(currentDate);
-                  calculateDays(currentDate, toDate);
+                labelField="label"
+                valueField="value"
+                placeholder="Select Project"
+                value={project}
+                onChange={(project) => setProject(project.value)}
+                style={{
+                  padding: 10,
+                }}
+                placeholderStyle={{
+                  color: '#ccc',
+                  fontSize: 16,
+                }}
+                selectedTextStyle={{
+                  fontSize: 16,
                 }}
               />
-            )}
+            </ClaimTypePicker>
           </FieldContainer>
+        )}
 
-          <Label>Attach File :</Label>
-          <FileButton onPress={handleFilePick}>
-            <InputText>{fileName}</InputText>
-            <Icon source={require('../assets/images/Upload-Icon.png')} />
-          </FileButton>
+        <FieldContainer>
+          <Label>From Date</Label>
+          <DatePickerButton onPress={() => setShowDatePicker(true)}>
+            <DateText>{expenseDate.toDateString()}</DateText>
+            <Icon source={require('../assets/images/c-icon.png')} />
+          </DatePickerButton>
+          {showDatePicker && (
+            <DateTimePicker
+              value={expenseDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={(event, selectedDate) => {
+                const currentDate = selectedDate || expenseDate;
+                setShowDatePicker(Platform.OS === 'ios');
+                setExpenseDate(currentDate);
+              }}
+            />
+          )}
+        </FieldContainer>
 
-      
-      <Label>Remarks :</Label>
-      <TextArea
-        placeholder="Remark"
-        value={remark}
-        onChangeText={setRemark}
-        multiline
-        numberOfLines={4}
-      />
-      
-      <SubmitButton onPress={handleSubmit}>
-        <ButtonText>Submit</ButtonText>
-      </SubmitButton>
-    </Container>
+        <Label>Attach File :</Label>
+        <FileButton onPress={handleFilePick}>
+          <InputText>{fileName}</InputText>
+          <Icon source={require('../assets/images/Upload-Icon.png')} />
+        </FileButton>
+
+        <Label>Remarks :</Label>
+        <TextArea
+          placeholder="Remark"
+          value={remark}
+          onChangeText={setRemark}
+          multiline
+          numberOfLines={4}
+        />
+
+        <SubmitButton onPress={handleSubmit}>
+          <ButtonText>Submit</ButtonText>
+        </SubmitButton>
+      </Container>
     </>
   );
 };
