@@ -17,6 +17,7 @@ const responsiveMarginBottom = screenHeight * 0.125;
 const Container = styled.View`
   padding: 16px;
   height: 100%;
+  width: 100%;
   background-color: #fff;
 `;
 
@@ -65,12 +66,14 @@ const LeaveNumber = styled.Text`
 const ApplyLeaveButton = styled.TouchableOpacity`
   background-color: #4d88ff;
   padding: 12px 16px;
-  border-radius: 24px;
+  border-radius: 25px;
   align-self: center;
   /* margin: 20px 0; */
   margin-bottom: ${responsiveMarginBottom}px;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 `;
 
 const ButtonText = styled.Text`

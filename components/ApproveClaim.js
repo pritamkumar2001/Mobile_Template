@@ -212,7 +212,7 @@ const ApproveClaim = () => {
             <ClaimText>Status: {status}</ClaimText>
           </View>
           <View>
-            <ClaimAmountText>₹ {item.expense_amt}</ClaimAmountText>
+            <ClaimAmountText> ₹ {item.expense_amt}</ClaimAmountText>
           </View>
         </ClaimStatusContainer>
 

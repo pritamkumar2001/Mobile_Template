@@ -5,6 +5,11 @@ import { MaterialIcons } from '@expo/vector-icons'; // For icons
 import { useNavigation, useRouter } from 'expo-router';
 import { getEmpClaim } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
+import { Dimensions } from 'react-native';
+
+
+const screenHeight = Dimensions.get('window').height;
+const responsiveMarginBottom = screenHeight * 0.0005;
 
 // Container for the whole screen
 const Container = styled.View`
@@ -51,11 +56,26 @@ const ClaimAmountText = styled.Text`
 const ApplyClaimButton = styled.TouchableOpacity`
   background-color: #4d88ff;
   padding: 12px 16px;
-  border-radius: 24px;
+  border-radius: 25px;
   align-self: center;
-  margin: 20px 0;
+  /* margin: 20px 0; */
+  margin-bottom: ${responsiveMarginBottom}px;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+const ApplyLeaveButton = styled.TouchableOpacity`
+  background-color: #4d88ff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  align-self: center;
+  /* margin: 20px 0; */
+  margin-bottom: ${responsiveMarginBottom}px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 `;
 
 // View button styles
