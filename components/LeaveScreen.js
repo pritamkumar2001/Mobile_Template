@@ -5,10 +5,14 @@ import { MaterialIcons } from '@expo/vector-icons'; // For icons
 // import { useNavigation } from '@react-navigation/native';
 import { Link, useRouter,useNavigation } from "expo-router";
 import ModalComponent from '../components/ModalComponent';
-import ModalComponentCancel from '../components/ModalComponentCancel';
 import { getEmpLeave } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
+import LeaveActionModal from './LeaveActionModal';
+import { Dimensions } from 'react-native';
 
+
+const screenHeight = Dimensions.get('window').height;
+const responsiveMarginBottom = screenHeight * 0.125;
 // Container for the whole screen
 const Container = styled.View`
   padding: 16px;
@@ -63,7 +67,8 @@ const ApplyLeaveButton = styled.TouchableOpacity`
   padding: 12px 16px;
   border-radius: 24px;
   align-self: center;
-  margin: 20px 0;
+  /* margin: 20px 0; */
+  margin-bottom: ${responsiveMarginBottom}px;
   flex-direction: row;
   align-items: center;
 `;
@@ -81,7 +86,7 @@ const ApplicationList = styled.ScrollView.attrs({
   showsHorizontalScrollIndicator: false,  // Hide horizontal scrollbar
 })`
   margin-top: 20px;
-  margin-bottom: 100px;
+  margin-bottom: 10px;
 `;
 
 const ApplicationCard = styled.TouchableOpacity`
@@ -207,7 +212,7 @@ const LeaveScreen = () => {
   const cancelLeave = (leave) => {
     // Set selected leave and open the cancel modal
     setSelectedLeave(leave);
-    console.log(leave)
+    // console.log(leave)
     setCancelModalVisible(true);
   };
 
@@ -219,7 +224,7 @@ const LeaveScreen = () => {
   const leaveDetails = () => {
     getEmpLeave(selectedTab === 'My Leave' ? 'EL' : selectedTab === 'My Cancel Leave' ? 'EL' : 'WH').then((res) => {
       setLeaveData(res.data);
-      console.log('testing----------',leaveData)
+      // console.log('testing----------',leaveData)
     });
   };
 
@@ -340,12 +345,7 @@ const LeaveScreen = () => {
           </LeaveCard>
         </CardRow>
 
-        {/* Apply Leave Button */}
-        <ApplyLeaveButton onPress={() => handlePress(leaveData&&leaveData[0]?.emp_data)}>
-          <MaterialIcons name="add-circle" size={24} color="#fff" />
-          <ButtonText>Apply Leave</ButtonText>
-        </ApplyLeaveButton>
-
+        
          {/* Tab Section */}
       <TabContainer>
         <TabButton onPress={() => setSelectedTab('My Leave')}>
@@ -384,8 +384,15 @@ const LeaveScreen = () => {
         renderItem={renderLeaveItem}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}  // Hide the scrollbar
-      />
+        />
+        
         </ApplicationList>
+        {/* Apply Leave Button */}
+        <ApplyLeaveButton onPress={() => handlePress(leaveData&&leaveData[0]?.emp_data)}>
+          <MaterialIcons name="add-circle" size={24} color="#fff" />
+          <ButtonText>Apply Leave</ButtonText>
+        </ApplyLeaveButton>
+
         {selectedLeave && (
         <ModalComponent
           isVisible={isModalVisible}
@@ -394,12 +401,13 @@ const LeaveScreen = () => {
         />
       )}
 
-      {selectedLeave && (
-        <ModalComponentCancel
-          isVisible={isCancelModalVisible}
-          leave={selectedLeave}
-          onClose={() => setCancelModalVisible(false)} // Close the modal when user presses close
-        />
+      {selectedLeave && (       
+          <LeaveActionModal 
+            isVisible={isCancelModalVisible} 
+            leave={selectedLeave} 
+            onClose={() => setCancelModalVisible(false)} 
+            actionType="CANCEL" 
+          />
       )}
 
       </Container>

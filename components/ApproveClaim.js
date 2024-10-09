@@ -170,8 +170,8 @@ const ApproveClaim = () => {
   
 
   const handleApprove = (claimDetails,callType) => {
-    console.log("Claim Details before navigating: ", claimDetails);
-  console.log("Call Type: ", callType);
+    // console.log("Claim Details before navigating: ", claimDetails);
+  // console.log("Call Type: ", callType);
   
   // Ensure claimDetails is a JSON string if needed
   const formattedClaimDetails = typeof claimDetails === 'object' 

@@ -9,7 +9,7 @@ const { width, height } = Dimensions.get('window');
 const HeaderContainer = styled.View`
   background-color: white;
   padding: 15px 10px;
-  margin-top: ${height < 800 ? '20px' : '48px'};
+  margin-top: ${height < 806 ? '20px' : '48px'};
   flex-direction: row;
   align-items: center;
   justify-content: space-between;

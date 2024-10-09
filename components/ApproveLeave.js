@@ -5,11 +5,9 @@ import { MaterialIcons } from '@expo/vector-icons'; // For icons
 import { useNavigation } from '@react-navigation/native';
 import { Link, useRouter } from "expo-router";
 import ModalComponent from '../components/ModalComponent';
-import ModalComponentApprove from './ModalComponentApprove';
-import ModalComponentReject from './ModalComponentReject';
-import SuccessModal from './SuccessModal'
-import {getEmpLeave} from './services/productServices'
+import {getEmpLeave} from './services/productServices';
 import HeaderComponent from './HeaderComponent';
+import LeaveActionModal from './LeaveActionModal';
 // Container for the whole screen
 const Container = styled.View`
   padding: 16px;
@@ -324,26 +322,35 @@ const LeaveScreen = () => {
           onClose={closeModal}
         />
       )}
-
       {selectedLeave && (
+      <LeaveActionModal 
+        isVisible={isApproveModalVisible} 
+        leave={selectedLeave} 
+        onClose={() => setApproveModalVisible(false)} 
+        actionType="APPROVE" 
+      />
+      )}
+      {/* {selectedLeave && (
         <ModalComponentApprove
           isVisible={isApproveModalVisible}
           leave={selectedLeave}
           onClose={() => setApproveModalVisible(false)} // Close the modal when user presses close
         />
-      )}
+      )} */}
       {selectedLeave && (
         <>
-        <ModalComponentReject
+        {/* <ModalComponentReject
           isVisible={isRejectModalVisible}
           leave={selectedLeave}
           onClose={() => setRejectModalVisible(false)} // Close the modal when user presses close
-        />
-        <SuccessModal 
-          isVisible={isSuccessModalVisible} 
-          onClose={() => setSuccessModalVisible(false)} 
-        />
-        </>
+        /> */}
+        <LeaveActionModal 
+        isVisible={isRejectModalVisible} 
+        leave={selectedLeave} 
+        onClose={() => setRejectModalVisible(false)} 
+        actionType="REJECT" 
+      />
+      </>
       )}
       </Container>
       </>

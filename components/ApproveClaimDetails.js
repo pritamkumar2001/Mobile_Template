@@ -98,7 +98,7 @@ const ApproveClaimDetails = (props) => {
   const [profile, setProfile] = useState({});
   
 
-  console.log("Claim Data: ", props.claim_data);
+  // console.log("Claim Data: ", props.claim_data);
   
   let claim;
   
@@ -108,14 +108,14 @@ const ApproveClaimDetails = (props) => {
     const claimDetails = claimData.claimDetails;
 
     // Log claimDetails to see what you're working with
-    console.log("Claim Details before parsing: ", claimDetails); 
+    // console.log("Claim Details before parsing: ", claimDetails); 
 
     // Check if claimDetails looks like a JSON string
     if (typeof claimDetails === 'string' && claimDetails !== "[object Object]") {
       try {
         // Attempt to parse if it seems valid
         claim = JSON.parse(claimDetails);
-        console.log("Parsed Claim: ", claim); 
+        // console.log("Parsed Claim: ", claim); 
       } catch (error) {
         console.error("Error parsing claimDetails: ", error);
       }
@@ -142,8 +142,8 @@ const ApproveClaimDetails = (props) => {
   const [managerGradeLevel, setManagerGradeLevel] = useState(0); // State to hold manager's grade level
   const claimGradeLevel = 100; // Example claim grade level from claim data
  
-  console.log('Claim Data ----',claim);
-  console.log('Call Type---',callType)
+  // console.log('Claim Data ----',claim);
+  // console.log('Call Type---',callType)
 
   useEffect(() => {
     // Fetch profile data
@@ -151,11 +151,15 @@ const ApproveClaimDetails = (props) => {
       setProfile(res.data);
     });
 
-    //Fetching Manager List
-    // getClaimApprover().then((res) => {
-    //   console.log('Approve api data---',res)
-    //   setManagers(res);
-    // });
+    // Fetching Manager List
+  //   getClaimApprover()
+  // .then((res) => {
+  //   console.log('Approve api data---', res);
+  //   setManagers(res);
+  // })
+  // .catch((error) => {
+  //   console.error('Error fetching claim approvers: ', error?.response || error.message || error);
+  // });
   }, []);
 
   const handleBackPress = () => {
@@ -258,14 +262,15 @@ const ApproveClaimDetails = (props) => {
         navigation.goBack(); // Navigate back after successful submission
       })
       .catch((error) => {
-        console.error(error);
+        // console.error(error);
         Alert.alert('Error', 'Failed to apply leave');
       });
   };
 
   return (
     <>
-    <HeaderComponent headerTitle={`${callType} Leaves`} onBackPress={handleBackPress} />
+    {/* <HeaderComponent headerTitle={`${callType} Leaves`} onBackPress={handleBackPress} /> */}
+    <HeaderComponent headerTitle={claim?.employee_name} onBackPress={handleBackPress} />
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <Container>
       {/* Claim Information */}
