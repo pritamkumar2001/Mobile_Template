@@ -228,7 +228,7 @@ const LeaveScreen = () => {
   };
 
   const count = leaveData.length
-  console.log(count)
+  // console.log(count)
 
   // Get status styles dynamically
   const getStatusStyles = (status_display) => {
@@ -245,6 +245,8 @@ const LeaveScreen = () => {
         return { bgColor: '#fff', color: '#000', borderColor: '#ddd', icon: 'check-circle' };
     }
   };
+
+  // console.log('Set Leave Data===========',selectedLeave)
 
   const renderLeaveItem = ({ item: leave }) => {
     const { bgColor, color, borderColor, icon } = getStatusStyles(leave.status_display);

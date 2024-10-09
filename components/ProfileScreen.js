@@ -108,7 +108,7 @@ const ProfileScreen = () => {
     });
   }, []);
 
-  // console.log(profile)
+  console.log('profile---------->',profile)
   const handleBackPress = () => {
     navigation.goBack();
   };

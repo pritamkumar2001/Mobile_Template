@@ -13,6 +13,7 @@ import HeaderComponent from './HeaderComponent';
 // Container for the whole screen
 const Container = styled.View`
   padding: 16px;
+  /* margin-bottom: 30px; */
   height: 100%;
   background-color: #fff;
 `;
@@ -82,8 +83,8 @@ const ApplicationList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,  // Hide vertical scrollbar
   showsHorizontalScrollIndicator: false,  // Hide horizontal scrollbar
 })`
-  margin-top: 20px;
-  margin-bottom: auto;
+  /* margin-top: 20px; */
+  margin-bottom: 120px;
 `;
 
 const ApplicationCard = styled.TouchableOpacity`

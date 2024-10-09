@@ -170,7 +170,7 @@ const HomePage = () => {
     const handlePressProfile = () => {
       router.push('profile');
     };
-    const handlePressALeave = (leave) => {
+    const handlePressALeave = () => {
       router.push({
         pathname: 'ApproveLeaves' 
       });

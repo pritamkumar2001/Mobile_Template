@@ -6,14 +6,12 @@ import { useNavigation, useRouter } from 'expo-router';
 import { getEmpClaim } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
 
-// Container for the whole screen
 const Container = styled.View`
   flex: 1;
   padding: 10px;
   background-color: #fff;
 `;
 
-// Styled card container for claim information
 const ClaimCard = styled.View`
   background-color: #E1D7F5;
   border-radius: 12px;
@@ -24,61 +22,60 @@ const ClaimCard = styled.View`
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-// Row container for Claim details and action button
 const ClaimStatusContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 `;
 
-// Claim text styles
 const ClaimText = styled.Text`
   font-size: 16px;
   color: #333;
   font-weight: 500;
 `;
 
-// Amount text style
 const ClaimAmountText = styled.Text`
   font-size: 15px;
   font-weight: bold;
   color: #ff5722;
 `;
 
-// View button container
 const ViewButton = styled.TouchableOpacity`
   background-color: #fff;
-  padding: 5px 10px;
-  border: 1px solid #ddd;
+  /* padding: 5px 10px; */
+  padding: 10px 10px;
+  border-width: 1px;
+  border-color: #454545;
   border-radius: 24px;
   flex-direction: row;
   align-items: center;
   margin-top: 10px;
 `;
 
-const ActionButton = styled.TouchableOpacity`
-  background-color: #4d88ff;
-  padding: 10px 20px;
-  border-radius: 24px;
-  margin-top: 10px;
-`;
-
 const ApproveButton = styled.TouchableOpacity`
-  background-color: #4d88ff;
-  padding: 10px 20px;
+  background-color: ${(props) => (props.disabled ? props.disabledColor : '#4d88ff')};
+  padding: 10px 10px;
   border-radius: 24px;
   margin-top: 10px;
+  border-width: 1px;
+  border-color: #454545;
 `;
 
+const ActionButton = styled.TouchableOpacity`
+  background-color: #ffa500;
+  padding: 10px 10px;
+  border-radius: 24px;
+  margin-top: 10px;
+  border-width: 1px;
+  border-color: #454545;
+`;
 
-// Action button text
 const ButtonText = styled.Text`
   color: #fff;
   font-size: 16px;
   font-weight: 600;
 `;
 
-// Search bar container
 const SearchContainer = styled.View`
   flex-direction: row;
   align-items: center;
@@ -88,7 +85,6 @@ const SearchContainer = styled.View`
   margin-bottom: 10px;
 `;
 
-// Search input field
 const SearchInput = styled.TextInput`
   flex: 1;
   font-size: 16px;
@@ -96,7 +92,6 @@ const SearchInput = styled.TextInput`
   padding-left: 8px;
 `;
 
-// Container for the image viewer
 const ImageViewerContainer = styled.View`
   flex: 1;
   justify-content: center;
@@ -104,7 +99,6 @@ const ImageViewerContainer = styled.View`
   background-color: #fff;
 `;
 
-// Image styles
 const StyledImage = styled.Image`
   width: 100%;
   height: 100%;
@@ -112,13 +106,15 @@ const StyledImage = styled.Image`
 
 const ApproveClaim = () => {
   const [claimData, setClaimData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]); // Added state for filtered data
+  const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const navigation = useNavigation();
   const router = useRouter();
   const requestData = 'APPROVE';
+  
 
+  // console.log(claimData)
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -132,9 +128,64 @@ const ApproveClaim = () => {
   const fetchClaimDetails = () => {
     getEmpClaim(requestData).then((res) => {
       setClaimData(res.data);
-      setFilteredData(res.data); // Set initial filtered data
+      setFilteredData(res.data);
     });
   };
+
+  const getClaimStatus = (status) => {
+    switch (status) {
+      case 'S':
+        return 'SUBMITTED';
+      case 'A':
+        return 'APPROVED';
+      case 'R':
+        return 'REJECTED';
+      default:
+        return 'UNKNOWN';
+    }
+  };
+
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+    const filtered = claimData.filter((item) => {
+      const empIdMatch = item.employee_name.match(/\[(.*?)\]/);
+      const empId = empIdMatch ? empIdMatch[1] : '';
+      return empId.includes(text);
+    });
+    setFilteredData(filtered);
+  };
+
+  const handleViewFile = (fileUrl) => {
+    const fileExtension = fileUrl.split('.').pop().split('?')[0].toLowerCase();
+    if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+      setSelectedImageUrl(fileUrl);
+    } else if (fileExtension === 'pdf') {
+      Alert.alert('File Downloading', 'The file is being downloaded.');
+      Linking.openURL(fileUrl).catch((err) => console.error('Failed to open URL:', err));
+    } else {
+      console.warn('Unsupported file type:', fileExtension);
+    }
+  };
+
+  
+
+  const handleApprove = (claimDetails,callType) => {
+    console.log("Claim Details before navigating: ", claimDetails);
+  console.log("Call Type: ", callType);
+  
+  // Ensure claimDetails is a JSON string if needed
+  const formattedClaimDetails = typeof claimDetails === 'object' 
+    ? JSON.stringify(claimDetails) 
+    : claimDetails; // Use it directly if it's already a string
+
+  router.push({
+    pathname: 'ApproveDetails',
+    params: { 
+      claimDetails: formattedClaimDetails, // Pass the formatted string
+      callType 
+    },
+  });
+};
 
   const handleBackPress = () => {
     if (selectedImageUrl) {
@@ -144,75 +195,56 @@ const ApproveClaim = () => {
     }
   };
 
-  const handleSearch = (text) => {
-    setSearchQuery(text);
+  const renderClaimItem = ({ item }) => {
+    const status = getClaimStatus(item.expense_status);
+    const isSubmitted = status === 'SUBMITTED';
+    const isRejected = status === 'REJECTED';
+    const isApproved = status === 'APPROVED';
 
-    // Filter claims based on search query
-    const filtered = claimData.filter(item => {
-      const empIdMatch = item.employee_name.match(/\[(.*?)\]/); // Extract employee ID
-      const empId = empIdMatch ? empIdMatch[1] : ''; // Get the employee ID or empty string
-      return empId.includes(text); // Check if the employee ID matches the search query
-    });
+    return (
+      <ClaimCard>
+        <ClaimStatusContainer>
+          <View>
+            <ClaimText>Emp: {item.employee_name}</ClaimText>
+            <ClaimText>Item Name: {item.item_name}</ClaimText>
+            <ClaimText>Claim ID: {item.claim_id}</ClaimText>
+            <ClaimText>Expense Date: {item.expense_date}</ClaimText>
+            <ClaimText>Status: {status}</ClaimText>
+          </View>
+          <View>
+            <ClaimAmountText>₹ {item.expense_amt}</ClaimAmountText>
+          </View>
+        </ClaimStatusContainer>
 
-    setFilteredData(filtered); // Update filtered data
+        <ClaimStatusContainer>
+          {item.submitted_file_1 && (
+            <ViewButton onPress={() => handleViewFile(item.submitted_file_1)}>
+              <MaterialIcons name="visibility" size={20} color="#333" />
+              <ClaimText style={{ marginLeft: 5 }}>View File</ClaimText>
+            </ViewButton>
+          )}
+
+          {/* Action button appears only if the status is SUBMITTED */}
+          {isSubmitted && (
+            <ActionButton onPress={() => handleApprove(item,'Return')}>
+              <ButtonText>Return Claim</ButtonText>
+              {/* <ButtonText>Claimant</ButtonText> */}
+            </ActionButton>
+          )}
+
+          <ApproveButton
+            disabled={!isSubmitted}
+            disabledColor={isRejected ? '#ff4444' : isApproved ? '#00C853' : '#4d88ff'}
+            onPress={() => handleApprove(item,'Approve')}
+          >
+            <ButtonText>{isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : 'APPROVE'}</ButtonText>
+          </ApproveButton>
+
+          
+        </ClaimStatusContainer>
+      </ClaimCard>
+    );
   };
-
-  const handleViewFile = (fileUrl) => {
-    const fileExtension = fileUrl.split('.').pop().split('?')[0].toLowerCase();
-
-    if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
-      // Set the selected image URL to display the image
-      setSelectedImageUrl(fileUrl);
-    } else if (fileExtension === 'pdf') {
-      // Show alert and open the PDF URL for download
-      Alert.alert('File Downloading', 'The file is being downloaded.');
-      Linking.openURL(fileUrl).catch((err) =>
-        console.error('Failed to open URL:', err)
-      );
-    } else {
-      console.warn('Unsupported file type:', fileExtension);
-    }
-  };
-
-  const renderClaimItem = ({ item }) => (
-    <ClaimCard>
-      <ClaimStatusContainer>
-        <View>
-          <ClaimText>Emp: {item.employee_name}</ClaimText>
-          <ClaimText>Item Name: {item.item_name}</ClaimText>
-          <ClaimText>Claim ID: {item.claim_id}</ClaimText>
-          <ClaimText>Expense Date: {item.expense_date}</ClaimText>
-        </View>
-        <View>
-          <ClaimAmountText>₹ {item.expense_amt}</ClaimAmountText>
-        </View>
-      </ClaimStatusContainer>
-
-      <ClaimStatusContainer>
-        {/* View Button */}
-       
-      </ClaimStatusContainer>
-      <ClaimStatusContainer>
-        {/* View Button */}
-        {item.submitted_file_1 && (
-          <ViewButton onPress={() => handleViewFile(item.submitted_file_1)}>
-            <MaterialIcons name="visibility" size={20} color="#333" />
-            <ClaimText style={{ marginLeft: 5 }}>View File</ClaimText>
-          </ViewButton>
-        )}
-
-        {/* Action Button */}
-        {/* <ActionButton onPress={() => {}}>
-          <ButtonText>Action</ButtonText>
-        </ActionButton> */}
-
-        {/* Approve Button */}
-        {/* <ApproveButton onPress={() => {}}>
-          <ButtonText>Approve</ButtonText>
-        </ApproveButton> */}
-      </ClaimStatusContainer>
-    </ClaimCard>
-  );
 
   if (selectedImageUrl) {
     return (
@@ -229,7 +261,6 @@ const ApproveClaim = () => {
     <>
       <HeaderComponent headerTitle="Approve Claim" onBackPress={handleBackPress} />
       <Container>
-        {/* Search Bar */}
         <SearchContainer>
           <MaterialIcons name="search" size={24} color="#888" />
           <SearchInput
@@ -240,9 +271,8 @@ const ApproveClaim = () => {
           />
         </SearchContainer>
 
-        {/* Claim List */}
         <FlatList
-          data={filteredData} // Use filtered data
+          data={filteredData}
           renderItem={renderClaimItem}
           keyExtractor={(item) => item.claim_id.toString()}
           showsVerticalScrollIndicator={false}

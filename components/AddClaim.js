@@ -178,7 +178,7 @@ const AddClaim = () => {
                   setImgMode('camera');
                 }
               } else {
-                alert('Camera permission is required to capture photos');
+                Alert.alert('Permission Required','Camera permission is required to capture photos');
               }
             },
           },
@@ -232,7 +232,7 @@ const AddClaim = () => {
         { cancelable: true }
       );
     } catch (err) {
-      alert('You have not selected a file. So, Please select a file.');
+      Alert.alert('No File Selected', 'You have not selected a file. Please select a file.');
     }
   };
 
@@ -282,7 +282,7 @@ const AddClaim = () => {
   const handleSubmit = () => {
     // Form submission logic
     if (!claimAmount || !expenseDate ) {
-      Alert.alert('Error', 'Please fill all fields and attach a valid file.');
+      Alert.alert('Submission Error', 'Please fill all fields and attach a valid file.');
       return;
     }
 
@@ -329,12 +329,13 @@ const AddClaim = () => {
         navigation.goBack(); // Navigate back after successful submission
         } else {
               console.error('Unexpected response:', res);
-              alert('Failed to claim. Unexpected response.');
+              Alert.alert('Claim Submission Error', 'Failed to claim. Unexpected response.');
+              // alert('Failed to claim. Unexpected response.');
         }
       })
       .catch((error) => {
-        console.error('Unexpected response:', error.response);
-        alert(`Failed to claim: ${error.response?.data?.detail || error.message}`);
+        // console.error('Unexpected response:', error.response);
+        Alert.alert('Claim Submission Failed', `Failed to claim: ${error.response?.data?.detail || error.message}`);
       });
   };
 
