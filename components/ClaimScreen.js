@@ -1,12 +1,11 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, StatusBar, View, SafeAreaView, Linking, Alert, Image } from 'react-native';
+import { FlatList, StatusBar, View, SafeAreaView, Linking, Alert, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { MaterialIcons } from '@expo/vector-icons'; // For icons
 import { useNavigation, useRouter } from 'expo-router';
 import { getEmpClaim } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
-import { Dimensions } from 'react-native';
-
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const screenHeight = Dimensions.get('window').height;
 const responsiveMarginBottom = screenHeight * 0.0005;
@@ -58,19 +57,6 @@ const ApplyClaimButton = styled.TouchableOpacity`
   padding: 12px 16px;
   border-radius: 25px;
   align-self: center;
-  /* margin: 20px 0; */
-  margin-bottom: ${responsiveMarginBottom}px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-`;
-const ApplyLeaveButton = styled.TouchableOpacity`
-  background-color: #4d88ff;
-  padding: 12px 16px;
-  border-radius: 12px;
-  align-self: center;
-  /* margin: 20px 0; */
   margin-bottom: ${responsiveMarginBottom}px;
   flex-direction: row;
   align-items: center;
@@ -78,7 +64,6 @@ const ApplyLeaveButton = styled.TouchableOpacity`
   width: 100%;
 `;
 
-// View button styles
 const ViewButton = styled.TouchableOpacity`
   background-color: #fff;
   border: 1px solid #4d88ff;
@@ -102,20 +87,6 @@ const ViewButtonText = styled.Text`
   font-size: 14px;
   font-weight: 600;
   margin-left: 4px;
-`;
-
-// Container for the image viewer
-const ImageViewerContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: #fff;
-`;
-
-// Image styles
-const StyledImage = styled.Image`
-  width: 100%;
-  height: 100%;
 `;
 
 const ClaimScreen = () => {
@@ -173,7 +144,6 @@ const ClaimScreen = () => {
   const renderClaimItem = ({ item }) => (
     <ClaimCard>
       <View>
-        {/* <ClaimText>Emp ID: {item.emp_id}</ClaimText> */}
         <ClaimText>Item Name: {item.item_name}</ClaimText>
         <ClaimText>Claim ID: {item.claim_id}</ClaimText>
         <ClaimText>Expense Date: {item.expense_date}</ClaimText>
@@ -194,9 +164,14 @@ const ClaimScreen = () => {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent headerTitle="View Image" onBackPress={handleBackPress} />
-        <ImageViewerContainer>
-          <StyledImage source={{ uri: selectedImageUrl }} resizeMode="contain" />
-        </ImageViewerContainer>
+        <View style={{ flex: 1 }}>
+          {/* Using ImageViewer for zoom functionality */}
+          <ImageViewer 
+            imageUrls={[{ url: selectedImageUrl }]} // Array of images
+            enableSwipeDown={true}
+            onSwipeDown={handleBackPress} // Close the image viewer on swipe down
+          />
+        </View>
       </SafeAreaView>
     );
   }

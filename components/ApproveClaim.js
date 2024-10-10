@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRouter } from 'expo-router';
 import { getEmpClaim } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
+import ImageViewer from 'react-native-image-zoom-viewer'; // Import the Image Zoom Viewer
 
 const Container = styled.View`
   flex: 1;
@@ -98,11 +99,6 @@ const ImageViewerContainer = styled.View`
   background-color: #fff;
 `;
 
-const StyledImage = styled.Image`
-  width: 100%;
-  height: 100%;
-`;
-
 const ApproveClaim = () => {
   const [claimData, setClaimData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -112,7 +108,6 @@ const ApproveClaim = () => {
   const router = useRouter();
   const requestData = 'APPROVE';
   
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -165,21 +160,19 @@ const ApproveClaim = () => {
     }
   };
 
-  
-
   const handleApprove = (claimDetails,callType) => {
-  const formattedClaimDetails = typeof claimDetails === 'object' 
-    ? JSON.stringify(claimDetails) 
-    : claimDetails; // Use it directly if it's already a string
+    const formattedClaimDetails = typeof claimDetails === 'object' 
+      ? JSON.stringify(claimDetails) 
+      : claimDetails; // Use it directly if it's already a string
 
-  router.push({
-    pathname: 'ApproveDetails',
-    params: { 
-      claimDetails: formattedClaimDetails, // Pass the formatted string
-      callType 
-    },
-  });
-};
+    router.push({
+      pathname: 'ApproveDetails',
+      params: { 
+        claimDetails: formattedClaimDetails, // Pass the formatted string
+        callType 
+      },
+    });
+  };
 
   const handleBackPress = () => {
     if (selectedImageUrl) {
@@ -231,8 +224,6 @@ const ApproveClaim = () => {
           >
             <ButtonText>{isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : 'APPROVE'}</ButtonText>
           </ApproveButton>
-
-          
         </ClaimStatusContainer>
       </ClaimCard>
     );
@@ -242,9 +233,14 @@ const ApproveClaim = () => {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderComponent headerTitle="View Image" onBackPress={handleBackPress} />
-        <ImageViewerContainer>
-          <StyledImage source={{ uri: selectedImageUrl }} resizeMode="contain" />
-        </ImageViewerContainer>
+        <View style={{ flex: 1 }}>
+          {/* Using ImageViewer for zoom functionality */}
+          <ImageViewer 
+            imageUrls={[{ url: selectedImageUrl }]} // Array of images
+            enableSwipeDown={true}
+            onSwipeDown={handleBackPress} // Close the image viewer on swipe down
+          />
+        </View>
       </SafeAreaView>
     );
   }
