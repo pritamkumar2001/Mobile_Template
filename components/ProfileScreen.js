@@ -10,9 +10,7 @@ import { useNavigation } from 'expo-router';
 
 // Styled components
 const Container = styled.View`
-  /* flex: 1; */
   height: 100%;
-  /* margin-top: 50px; */
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -50,10 +48,7 @@ const InfoText = styled.Text`
 const ProfileImage = styled.Image`
   width: 80px;
   height: 80px;
-  /* size={70} color="#5D5D5D" */
   border-radius: 60px;
-  /* margin-bottom: 10px; */
-  /* border: 5px solid  #007bff; */
 `;
 
 const IsManagerContainer = styled.View`
@@ -96,19 +91,17 @@ const ProfileScreen = () => {
   const [isManager, setIsManager] = useState(false);
 
   
-  const navigation = useNavigation(); // Access the navigation object
+  const navigation = useNavigation();
   
 
   useEffect(() => {
     // Fetch profile data
     getProfileInfo().then((res) => {
       setProfile(res.data);
-      // console.log(res.data);
       setIsManager(res.data.user_group.is_manager);
     });
   }, []);
 
-  // console.log('profile---------->',profile)
   const handleBackPress = () => {
     navigation.goBack();
   };
@@ -117,10 +110,8 @@ const ProfileScreen = () => {
     <>
     <HeaderComponent headerTitle="My Profile" onBackPress={handleBackPress} />
     <Container>
-      {/* <StatusBar style="auto" /> */}
       
       <AvatarContainer>
-        {/* <MaterialCommunityIcons name="account" size={70} color="#5D5D5D" /> */}
         <ProfileImage source={{ uri: profile.image }} />
       </AvatarContainer>
       <UserName>{profile&&profile?.emp_data?.name}</UserName>

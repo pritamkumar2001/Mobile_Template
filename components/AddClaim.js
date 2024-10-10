@@ -171,7 +171,6 @@ const AddClaim = () => {
   
                 if (!result.canceled) {
                   const compressedImage = await compressImage(result.assets[0].uri);
-                  // console.log(result)
                   setFileName(result.assets[0].fileName)
                   setFileUri(compressedImage.uri)
                   setFileMimeType(result.assets[0].mimeType)
@@ -194,27 +193,22 @@ const AddClaim = () => {
                 if (result.type !== 'cancel') {
                   const fileUri = result.assets[0].uri;
                   const fileName = result.assets[0].name;
-                  const mimeType = result.assets[0].mimeType || result.type; // Fallback for mimeType
+                  const mimeType = result.assets[0].mimeType || result.type;
           
-                  // Only compress if the selected file is an image
                   let compressedImageUri = fileUri;
                   if (result.assets[0].mimeType && result.assets[0].mimeType.startsWith('image/')) {
                     const compressedImage = await compressImage(fileUri);
-                    compressedImageUri = compressedImage.uri || compressedImage; // Handle compression result
+                    compressedImageUri = compressedImage.uri || compressedImage;
                   }
           
-                  // Update the state sequentially after compression and other async tasks
                   setFile({
                     uri: fileUri,
                     name: fileName,
                     mimeType: mimeType
                   });
                   setFileName(fileName);
-                  setFileUri(compressedImageUri); // Use the URI after compression
+                  setFileUri(compressedImageUri);
                   setFileMimeType(mimeType);
-          
-                  // Log for debugging
-                  // console.log('File:', { fileName, compressedImageUri, mimeType });
                 }
               } catch (error) {
                 console.error('Error while picking file or compressing:', error);
@@ -237,42 +231,37 @@ const AddClaim = () => {
   };
 
   const compressImage = async (uri) => {
-    let compressQuality = 1; // Start with the best quality
-    let targetSize = 200 * 1024; // Target size between 100 and 150 KB
+    let compressQuality = 1;
+    let targetSize = 200 * 1024;
     let compressedImage = await ImageManipulator.manipulateAsync(
       uri,
       [],
       { compress: compressQuality, format: ImageManipulator.SaveFormat.JPEG }
     );
   
-    // Get the size of the compressed image
     let imageInfo = await FileSystem.getInfoAsync(compressedImage.uri);
   
-    // Continue reducing the quality and resizing until we get within the target size range
     while (imageInfo.size > targetSize && compressQuality > 0.1) {
       compressQuality -= 0.1;
   
-      // Apply compression again
       compressedImage = await ImageManipulator.manipulateAsync(
         uri,
         [],
         { compress: compressQuality, format: ImageManipulator.SaveFormat.JPEG }
       );
   
-      // Get the new size
       imageInfo = await FileSystem.getInfoAsync(compressedImage.uri);
     }
   
-    // If compression alone isn't enough, resize the image
     if (imageInfo.size > targetSize) {
-      const resizeFactor = Math.sqrt(targetSize / imageInfo.size); // Calculate resizing factor
+      const resizeFactor = Math.sqrt(targetSize / imageInfo.size);
       compressedImage = await ImageManipulator.manipulateAsync(
         uri,
         [{ resize: { width: compressedImage.width * resizeFactor, height: compressedImage.height * resizeFactor } }],
         { compress: compressQuality, format: ImageManipulator.SaveFormat.JPEG }
       );
   
-      imageInfo = await FileSystem.getInfoAsync(compressedImage.uri); // Get final image info
+      imageInfo = await FileSystem.getInfoAsync(compressedImage.uri);
     }
   
     return compressedImage;
@@ -280,7 +269,6 @@ const AddClaim = () => {
 
 
   const handleSubmit = () => {
-    // Form submission logic
     if (!claimAmount || !expenseDate ) {
       Alert.alert('Submission Error', 'Please fill all fields and attach a valid file.');
       return;
@@ -313,28 +301,18 @@ const AddClaim = () => {
     if (project) {
       formData.append('project', project);
     }
-
-    // console.log('Testing-------->',formData)
-
     
-    
-    
-  
-
-    //API Call
     postClaim(formData)
       .then((res) => {
         if (res.status === 200) {
         Alert.alert('Success', 'Claim submitted successfully.');
-        navigation.goBack(); // Navigate back after successful submission
+        navigation.goBack();
         } else {
               console.error('Unexpected response:', res);
               Alert.alert('Claim Submission Error', 'Failed to claim. Unexpected response.');
-              // alert('Failed to claim. Unexpected response.');
         }
       })
       .catch((error) => {
-        // console.error('Unexpected response:', error.response);
         Alert.alert('Claim Submission Failed', `Failed to claim: ${error.response?.data?.detail || error.message}`);
       });
   };

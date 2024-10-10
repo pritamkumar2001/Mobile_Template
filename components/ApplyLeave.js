@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, StatusBar, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, StatusBar, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -7,7 +7,6 @@ import { useNavigation } from 'expo-router';
 import { postEmpLeave } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
 
-// Styled Components
 const Container = styled.ScrollView`
   flex: 1;
   padding: 10px;
@@ -79,22 +78,20 @@ const ApplyLeave = (props) => {
     navigation.goBack();
   };
 
-  // Function to calculate number of days between two dates
   const calculateDays = useCallback((startDate, endDate) => {
     const diffTime = Math.abs(endDate - startDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Added +1 to include both start and end dates
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     setNumOfDays(diffDays);
   }, []);
 
-  // Function to handle applying leave
   const addLeave = () => {
     if (!fromDate || !toDate || !leave_type) {
-      alert('Please fill all required fields');
+      Alert.alert('Incomplete Form', 'Please fill all required fields');
       return;
     }
 
     if (toDate < fromDate) {
-      alert('To Date should be after From Date');
+      Alert.alert('Invalid Date Range', 'To Date should be after From Date');
       return;
     }
 
@@ -113,12 +110,12 @@ const ApplyLeave = (props) => {
 
     postEmpLeave(leavePayload)
       .then((res) => {
-        alert('Leave applied successfully');
-        navigation.goBack(); // Navigate back after successful submission
+        Alert.alert('Application Submitted', 'Leave applied successfully');
+        navigation.goBack();
       })
       .catch((error) => {
         console.error(error);
-        alert('Failed to apply leave');
+        Alert.alert('Leave Application Failed', 'Failed to apply leave');
       });
   };
 
@@ -126,7 +123,6 @@ const ApplyLeave = (props) => {
     <>
       <HeaderComponent headerTitle="Apply Leave" onBackPress={handleBackPress} />
       <Container>
-        {/* From Date */}
         <FieldContainer>
           <Label>From Date</Label>
           <DatePickerButton onPress={() => setShowFromPicker(true)}>
@@ -148,7 +144,6 @@ const ApplyLeave = (props) => {
           )}
         </FieldContainer>
 
-        {/* To Date */}
         <FieldContainer>
           <Label>To Date</Label>
           <DatePickerButton onPress={() => setShowToPicker(true)}>
@@ -169,8 +164,6 @@ const ApplyLeave = (props) => {
             />
           )}
         </FieldContainer>
-
-        {/* Remark */}
         <FieldContainer>
           <Label>Remark</Label>
           <RemarkInput
@@ -180,7 +173,6 @@ const ApplyLeave = (props) => {
           />
         </FieldContainer>
 
-        {/* Type of Leave */}
         <FieldContainer>
           <Label>Type of Leave</Label>
           <Dropdown
@@ -207,7 +199,6 @@ const ApplyLeave = (props) => {
           />
         </FieldContainer>
 
-        {/* Submit Button */}
         <SubmitButton onPress={addLeave}>
           <SubmitButtonText>SUBMIT</SubmitButtonText>
         </SubmitButton>

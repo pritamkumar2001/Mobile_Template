@@ -182,14 +182,13 @@ const AddAttendance = () => {
 
     postCheckIn(checkPayload)
       .then((res) => {
-        Alert.alert('Success', 'Action successfully completed');
+        Alert.alert('Action Successful', 'Action successfully completed.');
         setCheckedIn(data === 'ADD');
         setStartTime(currentTime);
-        setRefreshKey((prevKey) => prevKey + 1); // Refresh the page
+        setRefreshKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
-        console.error('Error:', error.response ? error.response.data : error.message);
-        Alert.alert('Error', 'Failed to Check');
+        Alert.alert('Check Failure', 'Failed to Check.');
       });
   };
 

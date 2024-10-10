@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, Modal } from 'react-native';
+import { Text, Modal, Alert } from 'react-native';
 import styled from 'styled-components/native';
 import { postEmpLeave } from './services/productServices';
 
@@ -105,11 +105,11 @@ const LeaveActionModal = ({ isVisible, leave, onClose, actionType }) => {
 
     postEmpLeave(leavePayload)
       .then(() => {
-        alert(actionMessages[actionType]);
-        onClose(); // Close the modal on success
+        Alert.alert('Action Completed Successfully', `Successfully ${actionMessages[actionType]}`);
+        onClose();
       })
       .catch((error) => {
-        alert(`Failed to ${actionType.toLowerCase()} leave: ${error.message}`);
+        Alert.alert('Action Failed',`Failed to ${actionType.toLowerCase()} leave: ${error.message}`);
       });
   };
 

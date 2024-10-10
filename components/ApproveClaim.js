@@ -42,7 +42,6 @@ const ClaimAmountText = styled.Text`
 
 const ViewButton = styled.TouchableOpacity`
   background-color: #fff;
-  /* padding: 5px 10px; */
   padding: 10px 10px;
   border-width: 1px;
   border-color: #454545;
@@ -114,7 +113,6 @@ const ApproveClaim = () => {
   const requestData = 'APPROVE';
   
 
-  // console.log(claimData)
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -170,10 +168,6 @@ const ApproveClaim = () => {
   
 
   const handleApprove = (claimDetails,callType) => {
-    // console.log("Claim Details before navigating: ", claimDetails);
-  // console.log("Call Type: ", callType);
-  
-  // Ensure claimDetails is a JSON string if needed
   const formattedClaimDetails = typeof claimDetails === 'object' 
     ? JSON.stringify(claimDetails) 
     : claimDetails; // Use it directly if it's already a string
@@ -224,11 +218,9 @@ const ApproveClaim = () => {
             </ViewButton>
           )}
 
-          {/* Action button appears only if the status is SUBMITTED */}
           {isSubmitted && (
             <ActionButton onPress={() => handleApprove(item,'Return')}>
               <ButtonText>Return Claim</ButtonText>
-              {/* <ButtonText>Claimant</ButtonText> */}
             </ActionButton>
           )}
 

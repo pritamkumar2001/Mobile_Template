@@ -7,14 +7,12 @@ import { getClaimApprover, postClaimAction } from './services/productServices';
 import {Dropdown} from 'react-native-element-dropdown'; // Import Dropdown
 import HeaderComponent from './HeaderComponent';
 
-// Main container for the page
+
 const Container = styled.View`
   flex: 1;
   padding: 16px;
   background-color: #ffffff;
 `;
-
-// Styled component for the claim information
 const ClaimDetailContainer = styled.View`
   background-color: #e1d7f5;
   padding: 16px;
@@ -23,7 +21,6 @@ const ClaimDetailContainer = styled.View`
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-// Text for displaying claim details
 const ClaimDetailText = styled.Text`
   font-size: 18px;
   color: ${(props) => props.color || '#333'};
@@ -31,12 +28,10 @@ const ClaimDetailText = styled.Text`
   font-weight: 500;
 `;
 
-// Container for filling additional fields
 const FillFieldsContainer = styled.View`
   margin-top: 10px;
 `;
 
-// Input field for claim amount and remarks
 const InputField = styled.TextInput`
   border: 1px solid #ddd;
   padding: 12px;
@@ -45,14 +40,12 @@ const InputField = styled.TextInput`
   border-radius: 8px;
 `;
 
-// Label for input fields
 const InputLabel = styled.Text`
   font-size: 16px;
   color: #333;
   margin-top: 20px;
 `;
 
-// Text for instructions
 const InstructionsText = styled.Text`
   color: #7b5fa3;
   text-align: center;
@@ -60,14 +53,12 @@ const InstructionsText = styled.Text`
   font-size: 16px;
 `;
 
-// Container for the buttons
 const ButtonContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin-top: 20px;
 `;
 
-// Common style for action buttons
 const ActionButton = styled.TouchableOpacity`
   flex: 1;
   background-color: ${(props) => props.color || '#4d88ff'};
@@ -77,14 +68,12 @@ const ActionButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-// Text inside the buttons
 const ButtonText = styled.Text`
   color: #ffffff;
   font-size: 16px;
   font-weight: bold;
 `;
 
-// Dropdown item style
 const dropdownStyle = {
   borderWidth: 1,
   borderColor: '#ddd',
@@ -142,8 +131,6 @@ const ApproveClaimDetails = (props) => {
   const [managerGradeLevel, setManagerGradeLevel] = useState(0); // State to hold manager's grade level
   const claimGradeLevel = 100; // Example claim grade level from claim data
  
-  // console.log('Claim Data ----',claim);
-  // console.log('Call Type---',callType)
 
   useEffect(() => {
     // Fetch profile data
@@ -186,10 +173,7 @@ const ApproveClaimDetails = (props) => {
     return `${year}-${formattedMonth}-${day}`;
   };
 
-  // console.log('Manager max amt---',claimAmount)
-  
-  // console.log('Claim Amount---',managerData?.approve_data?.find(data => data.max_claim_amt)?.max_claim_amt)
-
+ 
   useEffect(() => {
     // Ensure manager data and claim amount are available before running the conditions
     if (managerData?.approve_data && claimAmount) {
@@ -198,25 +182,22 @@ const ApproveClaimDetails = (props) => {
 
         // Check if the manager's grade level is lower than the claim grade level
         if (managerGradeLevel < claimGradeLevel) {
-            Alert.alert('Warning', 'Your grade level does not allow you to approve this claim.');
+            Alert.alert('Approval Denied', 'Your grade level does not allow you to approve this claim.');
             setEligible(true);
         }
 
         // Check if the claim amount exceeds the manager's approval limit
         if (parseFloat(claimAmount) > maxClaimAmount) {
-            Alert.alert('Warning', `Claim amount exceeds your approval limit.`);
+            Alert.alert('Limit Exceeded', 'Claim amount exceeds your approval limit.');
             setEligible(true);
         }
     }
 }, [managerData, claimAmount, claimGradeLevel]);
 
 
-// console.log('Manager List----',managers)
-
-  // console.log(eligible)
   const handleAction = (res1) => {
     if (claimAmount.trim() === '' || remarks.trim() === '') {
-      Alert.alert('Warning', 'Please fill in all fields including selecting a manager.');
+      Alert.alert('Incomplete Submission', 'Please fill in all fields including selecting a manager.');
       return;
     }
 
@@ -228,7 +209,8 @@ const ApproveClaimDetails = (props) => {
 
     // Check if date parsing was successful
     if (isNaN(submittedDate) || isNaN(expenseDate)) {
-      Alert.alert('Error', 'Invalid date format. Please check the dates.');
+      Alert.alert('Date Format Error', 'Invalid date format. Please check the dates.');
+
       return;
     }
 
@@ -242,7 +224,7 @@ const ApproveClaimDetails = (props) => {
     const maxApproveDays = managerData?.approve_data?.find(data => data.max_days)?.max_days || 0;
 
     if (daysDifference > maxApproveDays) {
-      Alert.alert('Warning', `Claim cannot be approved as the difference is greater than ${maxApproveDays} days.`);
+      Alert.alert('Approval Not Allowed', `Claim cannot be approved as the difference is greater than ${maxApproveDays} days.`);
       return;
     }
 
@@ -258,12 +240,11 @@ const ApproveClaimDetails = (props) => {
     // Post the claim action
     postClaimAction(claimPayload)
       .then((res) => {
-        Alert.alert('Success', `Claim ${res1}.`);
-        navigation.goBack(); // Navigate back after successful submission
+        Alert.alert('Claim Status Update', `Claim ${res1}.`);
+        navigation.goBack();
       })
       .catch((error) => {
-        // console.error(error);
-        Alert.alert('Error', 'Failed to apply leave');
+        Alert.alert('Leave Action Failed', `Failed to ${res1} leave.`);
       });
   };
 
@@ -273,7 +254,6 @@ const ApproveClaimDetails = (props) => {
     <HeaderComponent headerTitle={claim?.employee_name} onBackPress={handleBackPress} />
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <Container>
-      {/* Claim Information */}
       <ClaimDetailContainer>
         <ClaimDetailText color="#ff8c00">Claim Id: {claim?.claim_id}</ClaimDetailText>
         <ClaimDetailText>Expense Item: {claim?.item_name}</ClaimDetailText>
@@ -281,7 +261,7 @@ const ApproveClaimDetails = (props) => {
         <ClaimDetailText>Claim Remark: {claim?.remarks}</ClaimDetailText>
       </ClaimDetailContainer>
       <InstructionsText>Fill the below fields for any action:</InstructionsText>
-      {/* Fields to be filled for approval or rejection */}
+
       <FillFieldsContainer>
         <InputLabel>Claim Amount :</InputLabel>
         <InputField
@@ -315,7 +295,6 @@ const ApproveClaimDetails = (props) => {
         />
         </>)}
       </FillFieldsContainer>
-      {/* Action Buttons for Approving or Rejecting Claim */}
       <ButtonContainer>
         <ActionButton color="#ff5722" onPress={() => handleAction('REJECT')}>
           <ButtonText>Reject Claim</ButtonText>

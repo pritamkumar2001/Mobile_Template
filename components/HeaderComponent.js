@@ -1,11 +1,10 @@
-// HeaderComponent.js
 import React from 'react';
 import { Text, Image, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 
 
 const { width, height } = Dimensions.get('window');
-// Container for the header
+
 const HeaderContainer = styled.View`
   background-color: white;
   padding: 15px 10px;
@@ -16,7 +15,7 @@ const HeaderContainer = styled.View`
   border-bottom-width: 1px;
   border-bottom-color: #ccc;
   elevation: 2;
-  width: 100%; /* Use 100% instead of device width directly */
+  width: 100%;
 
 `;
 

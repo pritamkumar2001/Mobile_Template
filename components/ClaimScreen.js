@@ -181,7 +181,6 @@ const ClaimScreen = () => {
       <ClaimAmountContainer>
         <ClaimAmountText>₹ {item.expense_amt}</ClaimAmountText>
       </ClaimAmountContainer>
-      {/* Conditionally display the View File button if submitted_file_1 has a URL */}
       {item.submitted_file_1 && (
         <ViewButton onPress={() => handleViewFile(item.submitted_file_1)}>
           <MaterialIcons name="visibility" size={20} color="#4d88ff" />

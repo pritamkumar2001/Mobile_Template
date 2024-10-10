@@ -138,15 +138,9 @@ const AttendanceStatus = (props) => {
       headerShown: false,
     });
   }, [navigation]);
-
-  // console.log(empId)
-
-  // Get the current month and year
   const currentMonth = date.getMonth();
   const currentYear = date.getFullYear();
 
-  // console.log('Fetched Attendance Data',attData)
-  // console.log('Holiday List -->',holiday)
 
   
 
@@ -286,9 +280,6 @@ const AttendanceStatus = (props) => {
     <HeaderComponent headerTitle="Attendance Status" onBackPress={() => navigation.goBack()} />
       
     <Container>
-      <Header>
-        {/* <HeaderText>Attendance Status</HeaderText> */}
-      </Header>
       <CalendarContainer>
         <NavButtonContainer onPress={() => changeMonth(-1)}>
           <Icon name="chevron-left" size={24} color="#3f87f9" />

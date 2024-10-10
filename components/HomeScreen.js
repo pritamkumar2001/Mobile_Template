@@ -11,7 +11,7 @@ const Container = styled.View`
 `;
 
 const MenuContainer = styled(ScrollView)`
-  height: ${height * 0.6}px;  /* Set height to 60% of the screen height */
+  height: ${height * 0.6}px;
   margin-top: 30px;
   padding: 10px;
 `;
@@ -24,7 +24,7 @@ const MenuWrapper = styled.View`
 
 const MenuItem = styled.TouchableOpacity`
   width: 45%;
-  height: ${height * 0.12}px;  /* Set height to 12% of screen height */
+  height: ${height * 0.12}px;
   background-color: #dcd6e9;
   padding: ${height * 0.02}px;
   border-radius: 15px;
@@ -35,13 +35,13 @@ const MenuItem = styled.TouchableOpacity`
 `;
 
 const MenuIcon = styled.Image`
-  width: ${width * 0.1}px;  /* Responsive width */
-  height: ${width * 0.1}px;  /* Responsive height */
+  width: ${width * 0.1}px;
+  height: ${width * 0.1}px;
   margin-bottom: 10px;
 `;
 
 const MenuText = styled.Text`
-  font-size: ${width * 0.04}px;  /* Responsive font size */
+  font-size: ${width * 0.04}px;
   font-weight: bold;
   color: #333;
 `;
@@ -102,15 +102,15 @@ const HeaderText = styled.Text`
 
 const HeaderCompanyName = styled.Text`
   color: black;
-  font-size: ${width * 0.03}px;  /* Responsive font size */
+  font-size: ${width * 0.03}px;
   font-weight: bold;
   text-align: left;
 `;
 
 const IconContainer = styled.View`
-  width: ${width * 0.15}px;  /* Responsive width */
-  height: ${width * 0.15}px;  /* Responsive height */
-  border-radius: ${width * 0.075}px;  /* Responsive border radius */
+  width: ${width * 0.15}px;
+  height: ${width * 0.15}px;
+  border-radius: ${width * 0.075}px;
   background-color: aliceblue;
   align-items: center;
   justify-content: center;
@@ -135,31 +135,27 @@ const HomePage = () => {
     const [company, setCompany] = useState([])
 
     const [isManager, setIsManager] = useState(false)
-    // console.log("data--->",profile)
+
 
     useEffect(() => {
       setLoading(true)
       getProfileInfo()
       .then((res) => {
-          // console.log(res.data)
           setProfile(res.data);
           setIsManager(res.data.user_group.is_manager);
           setLoading(false);
       })
       .catch((error) => {
-          // console.log('error', error);
           setLoading(false);
           setIsManager(false);
       });
 
       getCompanyInfo()
       .then((res) => {
-        // console.log(res.data)
         setCompany(res.data);
         setLoading(false);
     })
     .catch((error) => {
-        // console.log('error', error);
         setLoading(false);
     });
     }, []);
@@ -190,7 +186,6 @@ const HomePage = () => {
       router.push('attendance');
     };
 
-    // console.log('Company Data',company)
 
   return (
     <Container>
@@ -209,7 +204,6 @@ const HomePage = () => {
           <ProfileIcon source={{ uri: profile.image }} />
         </IconContainer>
         </HeaderImageContainer>
-     {/* <HeaderCompanyName>fhrydhgdrhguirhguirhgruhhrthghtrg</HeaderCompanyName> */}
         
         <HeaderContent>
           {/* <HeaderCompanyName>{company.name}</HeaderCompanyName> */}
@@ -219,7 +213,6 @@ const HomePage = () => {
         
       </Header>
 
-      {/* Menu Items */}
       <MenuContainer>
       <MenuWrapper>
 

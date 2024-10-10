@@ -288,13 +288,7 @@ const LeaveScreen = () => {
             )}
           </View>
         </ApplicationStatusContainer>
-        {/* <ApplicationDetails>
-          <DetailText>
-            
-          </DetailText>
-          
-          
-        </ApplicationDetails> */}
+
       </ApplicationCard>
     );
   };
@@ -304,14 +298,12 @@ const LeaveScreen = () => {
     
     <HeaderComponent headerTitle="Approve Leaves" onBackPress={handleBackPress} />
       <Container>
-
-        {/* Application List Section */}
         <ApplicationList>
         <FlatList
         data={leaveData}
         renderItem={renderLeaveItem}
         keyExtractor={(item) => item.id.toString()}
-        showsVerticalScrollIndicator={false}  // Hide the scrollbar
+        showsVerticalScrollIndicator={false}
       />
 
         </ApplicationList>
@@ -330,26 +322,15 @@ const LeaveScreen = () => {
         actionType="APPROVE" 
       />
       )}
-      {/* {selectedLeave && (
-        <ModalComponentApprove
-          isVisible={isApproveModalVisible}
-          leave={selectedLeave}
-          onClose={() => setApproveModalVisible(false)} // Close the modal when user presses close
-        />
-      )} */}
+     
       {selectedLeave && (
         <>
-        {/* <ModalComponentReject
-          isVisible={isRejectModalVisible}
-          leave={selectedLeave}
-          onClose={() => setRejectModalVisible(false)} // Close the modal when user presses close
-        /> */}
         <LeaveActionModal 
         isVisible={isRejectModalVisible} 
         leave={selectedLeave} 
         onClose={() => setRejectModalVisible(false)} 
         actionType="REJECT" 
-      />
+        />
       </>
       )}
       </Container>

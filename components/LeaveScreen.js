@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, Text, StatusBar, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
-import { MaterialIcons } from '@expo/vector-icons'; // For icons
-// import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Link, useRouter,useNavigation } from "expo-router";
 import ModalComponent from '../components/ModalComponent';
 import { getEmpLeave } from './services/productServices';
@@ -13,7 +12,7 @@ import { Dimensions } from 'react-native';
 
 const screenHeight = Dimensions.get('window').height;
 const responsiveMarginBottom = screenHeight * 0.125;
-// Container for the whole screen
+
 const Container = styled.View`
   padding: 16px;
   height: 100%;
@@ -21,7 +20,6 @@ const Container = styled.View`
   background-color: #fff;
 `;
 
-// Title for the "All Leaves"
 const Title = styled.Text`
   font-size: 22px;
   font-weight: 600;
@@ -29,14 +27,12 @@ const Title = styled.Text`
   margin-bottom: 20px;
 `;
 
-// Card container for leave status
 const CardRow = styled.View`
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
 `;
 
-// Individual card for leaves
 const LeaveCard = styled.TouchableOpacity`
   width: 95%;
   background-color: ${props => props.bgColor || '#fff'};
@@ -62,13 +58,11 @@ const LeaveNumber = styled.Text`
   margin-bottom: 5px;
 `;
 
-// Button for applying leave
 const ApplyLeaveButton = styled.TouchableOpacity`
   background-color: #4d88ff;
   padding: 12px 16px;
   border-radius: 25px;
   align-self: center;
-  /* margin: 20px 0; */
   margin-bottom: ${responsiveMarginBottom}px;
   flex-direction: row;
   align-items: center;
@@ -83,10 +77,9 @@ const ButtonText = styled.Text`
   margin-left: 8px;
 `;
 
-// Application List section
 const ApplicationList = styled.ScrollView.attrs({
-  showsVerticalScrollIndicator: false,  // Hide vertical scrollbar
-  showsHorizontalScrollIndicator: false,  // Hide horizontal scrollbar
+  showsVerticalScrollIndicator: false,
+  showsHorizontalScrollIndicator: false,
 })`
   margin-top: 20px;
   margin-bottom: 10px;
@@ -131,7 +124,6 @@ const CancelButton = styled.TouchableOpacity`
   padding: 4px 8px;
   border-radius: 8px;
   margin-top: 10px;
-  /* margin-left: 10px; */
 `;
 
 const CancelButtonText = styled.Text`
@@ -139,7 +131,6 @@ const CancelButtonText = styled.Text`
   font-size: 14px;
 `;
 
-// Tab container and buttons
 const TabContainer = styled.View`
   flex-direction: row;
   justify-content: center;
@@ -170,7 +161,6 @@ const TabTextActive = styled(TabText)`
   margin-bottom: 10px;
 `;
 
-// Application Details (Date, Apply Days, etc.)
 const ApplicationDetails = styled.View`
   margin-top: 10px;
 `;
@@ -213,9 +203,7 @@ const LeaveScreen = () => {
   };
 
   const cancelLeave = (leave) => {
-    // Set selected leave and open the cancel modal
     setSelectedLeave(leave);
-    // console.log(leave)
     setCancelModalVisible(true);
   };
 
@@ -227,7 +215,6 @@ const LeaveScreen = () => {
   const leaveDetails = () => {
     getEmpLeave(selectedTab === 'My Leave' ? 'EL' : selectedTab === 'My Cancel Leave' ? 'EL' : 'WH').then((res) => {
       setLeaveData(res.data);
-      // console.log('testing----------',leaveData)
     });
   };
 
@@ -236,6 +223,7 @@ const LeaveScreen = () => {
   };
 
   const count = leaveData.length
+  const max_leave = 0;
   // console.log(count)
 
   // Get status styles dynamically
@@ -254,7 +242,6 @@ const LeaveScreen = () => {
     }
   };
 
-  // console.log('Set Leave Data===========',selectedLeave)
 
   const renderLeaveItem = ({ item: leave }) => {
     const { bgColor, color, borderColor, icon } = getStatusStyles(leave.status_display);
@@ -267,7 +254,6 @@ const LeaveScreen = () => {
         onPress={() => handleCardPress(leave)}
       >
         <ApplicationStatusContainer>
-        {/* <StatusBar barStyle={'light-content'} backgroundColor={'#a970ff'} /> */}
           <View>
           <DetailText>Date: {leave.from_date} to {leave.to_date}</DetailText>
           <DetailText>
@@ -334,17 +320,12 @@ const LeaveScreen = () => {
     <>
       <HeaderComponent headerTitle="My Leaves" onBackPress={handleBackPress} />
       <Container>
-        {/* <Title>All Leaves</Title> */}
-
-        {/* Leave Cards Section */}
         <CardRow>
           <LeaveCard bgColor="#eaffea" borderColor="#66cc66">
-            {/* <LeaveText></LeaveText> */}
             <LeaveNumber color="#66cc66">Total Leave Applied: {count}</LeaveNumber>
           </LeaveCard>
           <LeaveCard bgColor="#e6ecff" borderColor="#4d88ff">
-            {/* <LeaveText>Max Leave for Year</LeaveText> */}
-            <LeaveNumber color="#4d88ff">Max Leave for Year: 0</LeaveNumber>
+            <LeaveNumber color="#4d88ff">Max Leave for Year: {max_leave}</LeaveNumber>
           </LeaveCard>
         </CardRow>
 
@@ -388,8 +369,8 @@ const LeaveScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}  // Hide the scrollbar
         />
-        
         </ApplicationList>
+        
         {/* Apply Leave Button */}
         <ApplyLeaveButton onPress={() => handlePress(leaveData&&leaveData[0]?.emp_data)}>
           <MaterialIcons name="add-circle" size={24} color="#fff" />
