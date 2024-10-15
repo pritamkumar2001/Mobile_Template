@@ -8,11 +8,11 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const userToken = AsyncStorage.getItem('userToken');
-if(userToken){
-  return(
-    <Redirect href={"/home"}></Redirect>
-  )
-}
+// if(userToken){
+//   return(
+//     <Redirect href={"/home"}></Redirect>
+//   )
+// }
   useEffect(() => {
     const checkUserToken = async () => {
       try {
@@ -21,10 +21,10 @@ if(userToken){
         
         if (userToken) {
           // If token exists, navigate to HomeScreen
-          router.push('/home');
+          router.replace('/home');
         } else {
           // Else, navigate to AuthScreen
-          router.push('/AuthScreen');
+          router.replace('/AuthScreen');
         }
       } catch (error) {
         console.error('Error fetching userToken from AsyncStorage', error);

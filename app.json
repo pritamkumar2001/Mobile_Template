@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "hr-app",
+    "name": "Atomwalk HRM",
     "slug": "atomwalkhrms",
     "version": "1.0.2",
     "orientation": "portrait",
@@ -16,7 +16,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 4,
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icons.png",
         "backgroundColor": "#ffffff"

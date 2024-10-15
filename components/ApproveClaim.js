@@ -10,17 +10,20 @@ import ImageViewer from 'react-native-image-zoom-viewer'; // Import the Image Zo
 const Container = styled.View`
   flex: 1;
   padding: 10px;
-  background-color: #fff;
+  background-color: #f8f9fa;
 `;
 
 const ClaimCard = styled.View`
-  background-color: #E1D7F5;
-  border-radius: 12px;
-  border-width: 1px;
-  border-color: #ccc;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 16px;
+  border-width: 0;
+  padding: 20px;
+  margin-bottom: 15px;
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.1;
+  shadow-radius: 10px;
+  elevation: 5;
 `;
 
 const ClaimStatusContainer = styled.View`
@@ -30,44 +33,56 @@ const ClaimStatusContainer = styled.View`
 `;
 
 const ClaimText = styled.Text`
-  font-size: 16px;
-  color: #333;
+  font-size: 15px;
+  color: #2f2f2f;
   font-weight: 500;
+`;
+const ClaimText2 = styled.Text`
+  font-size: 15px;
+  font-weight: 500;
+  color: ${(props) => (props.disabledColor ? props.disabledColor : '#28a745')};
 `;
 
 const ClaimAmountText = styled.Text`
-  font-size: 15px;
+  font-size: 16px;
   font-weight: bold;
-  color: #ff5722;
+  color: #007bff;
 `;
 
+
 const ViewButton = styled.TouchableOpacity`
-  background-color: #fff;
-  padding: 10px 10px;
-  border-width: 1px;
-  border-color: #454545;
-  border-radius: 24px;
+  background-color: #e9ecef;
+  padding: 12px 16px;
+  border-radius: 28px;
   flex-direction: row;
   align-items: center;
   margin-top: 10px;
+  shadow-color: #000;
+  shadow-offset: 0px 1px;
+  shadow-opacity: 0.1;
+  shadow-radius: 2px;
 `;
 
 const ApproveButton = styled.TouchableOpacity`
-  background-color: ${(props) => (props.disabled ? props.disabledColor : '#4d88ff')};
-  padding: 10px 10px;
-  border-radius: 24px;
+  background-color: ${(props) => (props.disabled ? props.disabledColor : '#28a745')};
+  padding: 12px 16px;
+  border-radius: 28px;
   margin-top: 10px;
-  border-width: 1px;
-  border-color: #454545;
+  shadow-color: #000;
+  shadow-offset: 0px 1px;
+  shadow-opacity: 0.1;
+  shadow-radius: 2px;
 `;
 
 const ActionButton = styled.TouchableOpacity`
-  background-color: #ffa500;
-  padding: 10px 10px;
-  border-radius: 24px;
+  background-color: #ffc107;
+  padding: 12px 16px;
+  border-radius: 28px;
   margin-top: 10px;
-  border-width: 1px;
-  border-color: #454545;
+  shadow-color: #000;
+  shadow-offset: 0px 1px;
+  shadow-opacity: 0.1;
+  shadow-radius: 2px;
 `;
 
 const ButtonText = styled.Text`
@@ -79,17 +94,17 @@ const ButtonText = styled.Text`
 const SearchContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 24px;
-  margin-bottom: 10px;
+  background-color: #e9ecef;
+  padding: 12px;
+  border-radius: 28px;
+  margin-bottom: 15px;
 `;
 
 const SearchInput = styled.TextInput`
   flex: 1;
   font-size: 16px;
-  color: #333;
-  padding-left: 8px;
+  color: #495057;
+  padding-left: 10px;
 `;
 
 const ImageViewerContainer = styled.View`
@@ -98,7 +113,12 @@ const ImageViewerContainer = styled.View`
   align-items: center;
   background-color: #fff;
 `;
-
+const StatusData=styled.View`
+border: 1px solid black;
+padding: 3px;
+border-radius: 5px;
+background-color: ${(props) => (props.disabled ? props.disabledColor : '#28a745')};
+`
 const ApproveClaim = () => {
   const [claimData, setClaimData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -107,7 +127,7 @@ const ApproveClaim = () => {
   const navigation = useNavigation();
   const router = useRouter();
   const requestData = 'APPROVE';
-  
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -150,9 +170,6 @@ const ApproveClaim = () => {
     setFilteredData(filtered);
   };
 
-  // console.log('Claim Data===',claimData)
-  console.log('Filterd Data===',filteredData)
-
   const handleViewFile = (fileUrl) => {
     const fileExtension = fileUrl.split('.').pop().split('?')[0].toLowerCase();
     if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
@@ -165,16 +182,16 @@ const ApproveClaim = () => {
     }
   };
 
-  const handleApprove = (claimDetails,callType) => {
-    const formattedClaimDetails = typeof claimDetails === 'object' 
-      ? JSON.stringify(claimDetails) 
+  const handleApprove = (claimDetails, callType) => {
+    const formattedClaimDetails = typeof claimDetails === 'object'
+      ? JSON.stringify(claimDetails)
       : claimDetails; // Use it directly if it's already a string
 
     router.push({
       pathname: 'ApproveDetails',
-      params: { 
+      params: {
         claimDetails: formattedClaimDetails, // Pass the formatted string
-        callType 
+        callType
       },
     });
   };
@@ -198,13 +215,15 @@ const ApproveClaim = () => {
       <ClaimCard>
         <ClaimStatusContainer>
           <View>
-            <ClaimText>Emp: {item.employee_name}</ClaimText>
-            <ClaimText>Item Name: {item.item_name}</ClaimText>
             <ClaimText>Claim ID: {item.claim_id}</ClaimText>
             <ClaimText>Expense Date: {item.expense_date}</ClaimText>
-            <ClaimText>Status: {status}</ClaimText>
+            <ClaimText>Item Name: {item.item_name}</ClaimText>
+            <ClaimText>Emp: {item.employee_name}</ClaimText>
           </View>
-          <View>
+          <View style={{alignItems:'center'}}>
+            {/* <StatusData> */}
+            <ClaimText2  disabledColor={isRejected ? '#dc3545' : isForwarded ? '#ffc107' : '#28a745'}>{status}</ClaimText2>
+            {/* </StatusData> */}
             <ClaimAmountText> ₹ {item.expense_amt}</ClaimAmountText>
           </View>
         </ClaimStatusContainer>
@@ -218,18 +237,19 @@ const ApproveClaim = () => {
           )}
 
           {isSubmitted && (
-            <ActionButton onPress={() => handleApprove(item,'Return')}>
+            <ActionButton onPress={() => handleApprove(item, 'Return')}>
               <ButtonText>Return Claim</ButtonText>
             </ActionButton>
           )}
-
-          <ApproveButton
-            disabled={!isSubmitted}
-            disabledColor={isRejected ? '#ff4444' : isForwarded ? '#ffa500': isApproved ? '#00C853' : '#4d88ff'}
-            onPress={() => handleApprove(item,'Approve')}
-          >
-            <ButtonText>{isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : isForwarded ? 'FORWARDED' : 'APPROVE'}</ButtonText>
-          </ApproveButton>
+          {!isApproved && !isForwarded&&!isRejected&&(
+            <ApproveButton
+              disabled={!isSubmitted}
+              disabledColor={isRejected ? '#dc3545' : isForwarded ? '#ffc107' : '#28a745'}
+              onPress={() => handleApprove(item, 'Approve')}
+            >
+              <ButtonText>{isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : isForwarded ? 'FORWARDED' : 'APPROVE'}</ButtonText>
+            </ApproveButton>
+          )}
         </ClaimStatusContainer>
       </ClaimCard>
     );
@@ -241,7 +261,7 @@ const ApproveClaim = () => {
         <HeaderComponent headerTitle="View Image" onBackPress={handleBackPress} />
         <View style={{ flex: 1 }}>
           {/* Using ImageViewer for zoom functionality */}
-          <ImageViewer 
+          <ImageViewer
             imageUrls={[{ url: selectedImageUrl }]} // Array of images
             enableSwipeDown={true}
             onSwipeDown={handleBackPress} // Close the image viewer on swipe down
@@ -253,7 +273,7 @@ const ApproveClaim = () => {
 
   return (
     <>
-      <HeaderComponent headerTitle="Approve Claim" onBackPress={handleBackPress} />
+      <HeaderComponent headerTitle="Approve Claim List" onBackPress={handleBackPress} />
       <Container>
         <SearchContainer>
           <MaterialIcons name="search" size={24} color="#888" />
