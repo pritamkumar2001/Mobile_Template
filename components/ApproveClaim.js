@@ -6,6 +6,7 @@ import { useNavigation, useRouter } from 'expo-router';
 import { getEmpClaim } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
 import ImageViewer from 'react-native-image-zoom-viewer'; // Import the Image Zoom Viewer
+import ModalComponent from './ModalComponent';
 
 const Container = styled.View`
   flex: 1;
@@ -13,12 +14,13 @@ const Container = styled.View`
   background-color: #f8f9fa;
 `;
 
-const ClaimCard = styled.View`
+const ClaimCard = styled.TouchableOpacity`
   background-color: #ffffff;
   border-radius: 16px;
   border-width: 0;
   padding: 20px;
   margin-bottom: 15px;
+  border: 1px solid black;
   shadow-color: #000;
   shadow-offset: 0px 2px;
   shadow-opacity: 0.1;
@@ -100,6 +102,14 @@ const SearchContainer = styled.View`
   margin-bottom: 15px;
 `;
 
+const ApplicationList = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,  // Hide vertical scrollbar
+  showsHorizontalScrollIndicator: false,  // Hide horizontal scrollbar
+})`
+  /* margin-top: 20px; */
+  margin-bottom: 120px;
+`;
+
 const SearchInput = styled.TextInput`
   flex: 1;
   font-size: 16px;
@@ -120,6 +130,9 @@ border-radius: 5px;
 background-color: ${(props) => (props.disabled ? props.disabledColor : '#28a745')};
 `
 const ApproveClaim = () => {
+  
+  const [selectedClaim, setSelectedClaim] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
   const [claimData, setClaimData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -170,6 +183,10 @@ const ApproveClaim = () => {
     setFilteredData(filtered);
   };
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   const handleViewFile = (fileUrl) => {
     const fileExtension = fileUrl.split('.').pop().split('?')[0].toLowerCase();
     if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
@@ -204,6 +221,11 @@ const ApproveClaim = () => {
     }
   };
 
+  const handleCardPress = (claim) => {
+    setSelectedClaim(claim);
+    setModalVisible(true);
+  };
+
   const renderClaimItem = ({ item }) => {
     const status = getClaimStatus(item.expense_status);
     const isSubmitted = status === 'SUBMITTED';
@@ -212,7 +234,10 @@ const ApproveClaim = () => {
     const isApproved = status === 'APPROVED';
 
     return (
-      <ClaimCard>
+      <ClaimCard 
+      key={item.id}
+      status={item.status_display}
+      onPress={() => handleCardPress(item)}>
         <ClaimStatusContainer>
           <View>
             <ClaimText>Claim ID: {item.claim_id}</ClaimText>
@@ -284,13 +309,21 @@ const ApproveClaim = () => {
             onChangeText={handleSearch}
           />
         </SearchContainer>
-
+        <ApplicationList>
         <FlatList
           data={[...filteredData].reverse()}
           renderItem={renderClaimItem}
           keyExtractor={(item) => item.claim_id.toString()}
           showsVerticalScrollIndicator={false}
         />
+        </ApplicationList>
+      {selectedClaim && (
+        <ModalComponent
+          isVisible={isModalVisible}
+          claim={selectedClaim}
+          onClose={closeModal}
+        />
+      )}
       </Container>
     </>
   );

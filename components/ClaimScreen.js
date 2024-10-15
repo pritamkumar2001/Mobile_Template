@@ -6,6 +6,7 @@ import { useNavigation, useRouter } from 'expo-router';
 import { getEmpClaim } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import ModalComponent from './ModalComponent';
 
 const screenHeight = Dimensions.get('window').height;
 const responsiveMarginBottom = screenHeight * 0.0005;
@@ -18,7 +19,7 @@ const Container = styled.View`
 `;
 
 // Card container for claim information
-const ClaimCard = styled.View`
+const ClaimCard = styled.TouchableOpacity`
   background-color: #e1d7f5;
   border-radius: 12px;
   border-width: 1px;
@@ -91,6 +92,8 @@ const ViewButtonText = styled.Text`
 
 const ClaimScreen = () => {
   const router = useRouter();
+  const [selectedClaim, setSelectedClaim] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
   const [claimData, setClaimData] = useState([]);
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const navigation = useNavigation();
@@ -118,6 +121,14 @@ const ClaimScreen = () => {
     } else {
       router.push('home');
     }
+  };
+
+  const handleCardPress = (claim) => {
+    setSelectedClaim(claim);
+    setModalVisible(true);
+  };
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   const handlePress = () => {
@@ -161,7 +172,10 @@ const ClaimScreen = () => {
   console.log('Claim Data---',claimData)
 
   const renderClaimItem = ({ item }) => (
-    <ClaimCard>
+    <ClaimCard 
+    key={item.id}
+    status={item.status_display}
+    onPress={() => handleCardPress(item)}>
       <View>
       <ClaimText>Item Name: {item.item_name}</ClaimText>
       <ClaimText>Claim ID: {item.claim_id}</ClaimText>
@@ -219,6 +233,14 @@ const ClaimScreen = () => {
           <MaterialIcons name="add-circle" size={24} color="#fff" />
           <ButtonText>Apply Claim</ButtonText>
         </ApplyClaimButton>
+
+        {selectedClaim && (
+        <ModalComponent
+          isVisible={isModalVisible}
+          claim={selectedClaim}
+          onClose={closeModal}
+        />
+      )}
       </Container>
     </SafeAreaView>
   );

@@ -2,16 +2,34 @@ import React from 'react';
 import { Text, View, Modal, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 
-const ModalComponent = ({ isVisible, leave, onClose }) => {
+const ModalComponent = ({ isVisible, leave, onClose, claim }) => {
+  console.log("Claim Data",claim)
   return (
     <Modal visible={isVisible} transparent={true} animationType="slide">
       <ModalContainer>
         <ModalContent>
-          <Text>{leave.leave_type_display}</Text>
-          <Text>No. of Days: {leave.no_leave_count}</Text>
-          <Text>{leave.from_date} to {leave.to_date}</Text>
-          <Text>Remark: {leave.remarks}</Text>
-          <Text>Status: {leave.status_display}</Text>
+
+          
+          {leave ? (
+            <>
+            <Text>{leave.leave_type_display}</Text>
+            <Text>No. of Days: {leave.no_leave_count}</Text>
+            <Text>{leave.from_date} to {leave.to_date}</Text>
+            <Text>Remark: {leave.remarks}</Text>
+            <Text>Status: {leave.status_display}</Text>
+            </>
+          ) : null}
+
+          {claim ? (
+            <>
+            <Text style={{ fontWeight: 'bold' }} >{claim.claim_id}</Text>
+            <Text>Claim Date: {claim.submitted_date}</Text>
+            <Text>Expense Amount: {claim.expense_amt}</Text>
+            <Text>Project Name: {claim.project_name}</Text>
+            <Text>Remark: {claim.remarks}</Text>
+            {/* <Text>Status: {leave.status_display}</Text> */}
+            </>
+          ) : null}
 
           <CancelButton onPress={onClose}>
             <Text style={{ color: 'white' }}>Back</Text>

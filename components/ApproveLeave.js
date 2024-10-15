@@ -16,6 +16,21 @@ const Container = styled.View`
   background-color: #fff;
 `;
 
+const SearchContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  background-color: #e9ecef;
+  padding: 12px;
+  border-radius: 28px;
+  margin-bottom: 15px;
+`;
+
+const SearchInput = styled.TextInput`
+  flex: 1;
+  font-size: 16px;
+  color: #495057;
+  padding-left: 10px;
+`;
 
 const ButtonText = styled.Text`
   color: #fff;
@@ -68,6 +83,7 @@ const ApplicationStatusText = styled.Text`
   margin-left: 8px;
   font-weight: bold;
 `;
+
 
 
 
@@ -124,6 +140,8 @@ const LeaveScreen = () => {
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [leaveData,setLeavedata]=useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isRejectModalVisible, setRejectModalVisible] = useState(false);
   const [isApproveModalVisible, setApproveModalVisible] = useState(false);
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false);
@@ -137,6 +155,19 @@ const LeaveScreen = () => {
     router.push({
       pathname: 'LeaveApply',
       params: leave,  // Pass leave data as params
+    });
+  };
+
+  useEffect(() => {
+    leaveDetails();
+  }, [selectedTab]);
+  
+
+
+  const leaveDetails = () => {
+    getEmpLeave(selectedTab =='My Leave' ? "EL" : selectedTab =='My WFH' ? "WH" : "A" ).then((res) => {
+      setLeavedata(res.data);
+      setFilteredData(res.data);
     });
   };
 
@@ -174,18 +205,22 @@ const LeaveScreen = () => {
     router.push('home');
   };
 
-
-  useEffect(() => {
-    leaveDetails();
-  }, [selectedTab]);
+  const handleSearch = (text) => {
+    setSearchQuery(text.trim().toLowerCase());
   
-
-
-  const leaveDetails = () => {
-    getEmpLeave(selectedTab =='My Leave' ? "EL" : selectedTab =='My WFH' ? "WH" : "A" ).then((res) => {
-      setLeavedata(res.data);
+    // Filter the leaveData based on the employee ID directly
+    const filtered = leaveData.filter((item) => {
+      // Access emp_id directly from the item.emp_data
+      const empId = item.emp_data.emp_id.trim().toLowerCase(); 
+      return empId.includes(text); // Check if emp_id includes the search text
     });
+  
+    setFilteredData(filtered);
   };
+
+
+
+ 
   
 
   console.log("Leave Type",leaveData)
@@ -283,9 +318,18 @@ const LeaveScreen = () => {
     
     <HeaderComponent headerTitle="Approve Leaves List" onBackPress={handleBackPress} />
       <Container>
+      <SearchContainer>
+          <MaterialIcons name="search" size={24} color="#888" />
+          <SearchInput
+            placeholder="Search Employee ID"
+            placeholderTextColor="#888"
+            value={searchQuery}
+            onChangeText={handleSearch}
+          />
+        </SearchContainer>
         <ApplicationList>
         <FlatList
-        data={leaveData}
+        data={filteredData}
         renderItem={renderLeaveItem}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}

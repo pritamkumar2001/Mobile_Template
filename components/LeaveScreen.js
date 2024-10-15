@@ -105,7 +105,7 @@ const ApplicationStatus = styled.View`
   flex-direction: row;
   align-items: center;
   background-color: ${props => props.bgColor || 'transparent'};
-  padding: 4px 8px;
+  padding: 2px 8px;
   border-radius: 8px;
 `;
 
@@ -121,7 +121,7 @@ const CancelButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
 
-  padding: 4px 8px;
+  padding: 5px 8px;
   border-radius: 8px;
   margin-top: 10px;
 `;
@@ -244,7 +244,7 @@ const LeaveScreen = () => {
   const getStatusStyles = (status_display) => {
     switch (status_display) {
       case 'Submitted':
-        return { bgColor: '#fff7e6', color: '#ffcc80', borderColor: '#ffcc80', icon: 'highlight-off' };
+        return { bgColor: '#fff7e6', color: '#ffcc80', borderColor: '#ffcc80', icon: 'check' };
       case 'Rejected':
         return { bgColor: '#ffe6e6', color: '#ff6666', borderColor: '#ff6666', icon: 'cancel' };
       case 'Cancelled':
@@ -269,6 +269,9 @@ const LeaveScreen = () => {
       >
         <ApplicationStatusContainer>
           <View>
+          <DetailText>
+            Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
+          </DetailText>
           <DetailText>Date: {leave.from_date} to {leave.to_date}</DetailText>
           <DetailText>
             Leave Type: <DetailHighlight>{leave.leave_type_display}</DetailHighlight>
@@ -287,12 +290,7 @@ const LeaveScreen = () => {
             )}
           </View>
           </ApplicationStatusContainer>
-        <ApplicationDetails>
-          <DetailText>
-            Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
-          </DetailText>
-          
-        </ApplicationDetails>
+        
       </ApplicationCard>:leave.status_display=='Cancelled'&&selectedTab=='My Cancel Leave'&&<ApplicationCard
         key={leave.id}
         borderColor={borderColor}
@@ -305,6 +303,9 @@ const LeaveScreen = () => {
           <DetailText>
             Leave Type: <DetailHighlight>{leave.leave_type_display}</DetailHighlight>
           </DetailText>
+          <DetailText>
+            Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
+          </DetailText>
           </View>
           <View style={{ flexDirection: 'culomn' }}>
             <ApplicationStatus bgColor={bgColor}>
@@ -320,9 +321,7 @@ const LeaveScreen = () => {
           </View>
           </ApplicationStatusContainer>
         <ApplicationDetails>
-          <DetailText>
-            Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
-          </DetailText>
+          
           
         </ApplicationDetails>
       </ApplicationCard>

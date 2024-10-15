@@ -94,7 +94,7 @@ const ProfileScreen = () => {
   
   const navigation = useNavigation();
   
-  console.log('Profile data--',profile.emp_data)
+  console.log('Profile data--',profile)
 
   useEffect(() => {
     // Fetch profile data
@@ -140,8 +140,8 @@ const ProfileScreen = () => {
       {profile?.emp_data?.department_name ? (
         <InfoText>Department : {profile?.emp_data?.department_name}</InfoText>
       ) : null}
-      {profile?.user_nick_name ? (
-        <InfoText>Mob. No. : {profile.user_nick_name}</InfoText>
+      {profile?.mobile_number ? (
+        <InfoText>Mob. No. : {profile.mobile_number}</InfoText>
       ) : null}
 
       <LogOutButton onPress={() => {logout()}}>
