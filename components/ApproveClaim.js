@@ -106,8 +106,6 @@ const ApplicationList = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,  // Hide vertical scrollbar
   showsHorizontalScrollIndicator: false,  // Hide horizontal scrollbar
 })`
-  /* margin-top: 20px; */
-  margin-bottom: 120px;
 `;
 
 const SearchInput = styled.TextInput`
