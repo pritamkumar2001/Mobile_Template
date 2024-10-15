@@ -96,14 +96,14 @@ const DetailText = styled.Text`
 const RejectButton = styled.TouchableOpacity`
   background-color: #ff6666;
   display: flex;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   align-items: center;
   justify-content: center;
   height: 40px;
-  width: 120px;
+  /* width: 120px; */
 
-  padding: 5px 20px;
-  border-radius: 8px;
+  padding: 3px 28px;
+  border-radius: 22px;
   margin-top: 10px;
   /* margin-left: 10px; */
 `;
@@ -112,12 +112,12 @@ const ApprovelButton = styled.TouchableOpacity`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 20px;
-  border-radius: 8px;
+  padding: 2px 20px;
+  border-radius: 22px;
   margin-top: 10px;
   height: 40px;
-  width: 120px;
-  border: 1px solid black;
+  /* width: 120px; */
+  /* border: 1px solid black; */
 
   /* margin-left: 10px; */
 `;

@@ -270,7 +270,7 @@ const ApproveClaim = () => {
               disabledColor={isRejected ? '#dc3545' : isForwarded ? '#ffc107' : '#28a745'}
               onPress={() => handleApprove(item, 'Approve')}
             >
-              <ButtonText>{isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : isForwarded ? 'FORWARDED' : 'APPROVE'}</ButtonText>
+              <ButtonText>{isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : isForwarded ? 'FORWARDED' : 'Approve'}</ButtonText>
             </ApproveButton>
           )}
         </ClaimStatusContainer>
