@@ -16,64 +16,12 @@ const Container = styled.View`
   background-color: #fff;
 `;
 
-// Title for the "All Leaves"
-const Title = styled.Text`
-  font-size: 22px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-// Card container for leave status
-const CardRow = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
-
-// Individual card for leaves
-const LeaveCard = styled.TouchableOpacity`
-  width: 95%;
-  background-color: ${props => props.bgColor || '#fff'};
-  /* padding: 20px; */
-  border-radius: 16px;
-  border-width: 1px;
-  border-color: ${props => props.borderColor || '#ddd'};
-  margin-bottom: 12px;
-  align-items: center;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const LeaveText = styled.Text`
-  font-size: 16px;
-  color: #333;
-  font-weight: 500;
-`;
-
-const LeaveNumber = styled.Text`
-  font-size: 22px;
-  font-weight: bold;
-  color: ${props => props.color || '#000'};
-  margin-top: 5px;
-  margin-bottom: 5px;
-`;
-
-// Button for applying leave
-const ApplyLeaveButton = styled.TouchableOpacity`
-  background-color: #4d88ff;
-  padding: 12px 16px;
-  border-radius: 24px;
-  align-self: center;
-  margin: 20px 0;
-  flex-direction: row;
-  align-items: center;
-`;
 
 const ButtonText = styled.Text`
   color: #fff;
   font-size: 16px;
   font-weight: 600;
-  margin-left: 8px;
+  /* margin-left: 8px; */
 `;
 
 // Application List section
@@ -92,7 +40,12 @@ const ApplicationCard = styled.TouchableOpacity`
   border-width: 1px;
   border-color: ${props => props.borderColor || '#ddd'};
   margin-bottom: 12px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); */
+  shadow-color: #000;
+  shadow-opacity: 0.1;
+  shadow-radius: 4px;
+  shadow-offset: 0px 2px;
+  elevation: 4;
 `;
 
 const ApplicationStatusContainer = styled.View`
@@ -113,22 +66,27 @@ const ApplicationStatusText = styled.Text`
   font-size: 14px;
   color: ${props => props.color || '#000'};
   margin-left: 8px;
+  font-weight: bold;
 `;
 
 
 
 const DetailText = styled.Text`
   font-size: 14px;
+  margin-bottom: 10px;
   color: #333;
 `;
 
 const RejectButton = styled.TouchableOpacity`
   background-color: #ff6666;
   display: flex;
+  border: 1px solid black;
   align-items: center;
   justify-content: center;
+  height: 40px;
+  width: 120px;
 
-  padding: 4px 8px;
+  padding: 5px 20px;
   border-radius: 8px;
   margin-top: 10px;
   /* margin-left: 10px; */
@@ -138,10 +96,13 @@ const ApprovelButton = styled.TouchableOpacity`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 4px 8px;
+  padding: 5px 20px;
   border-radius: 8px;
   margin-top: 10px;
+  height: 40px;
+  width: 120px;
+  border: 1px solid black;
+
   /* margin-left: 10px; */
 `;
 
@@ -226,6 +187,21 @@ const LeaveScreen = () => {
     });
   };
   
+
+  console.log("Leave Type",leaveData)
+
+  const getLeaveStyles = (leave_type_display) => {
+    switch (leave_type_display) {
+      case 'Work from Home':  
+        return { lbgColor: '#ffc107', lcolor: '#ffffff'};
+      case 'Leave without Pay':
+        return { lbgColor: '#DC3545', lcolor: '#ffffff'};
+      case 'Earned Leave':
+        return { lbgColor: '#17A2B8', lcolor: '#ffffff'};
+      default:
+        return { lbgColor: '#fff', lcolor: '#000'};
+    }
+  };
   
 
   // Get status styles dynamically
@@ -245,6 +221,7 @@ const LeaveScreen = () => {
   };
   const renderLeaveItem = ({ item: leave }) => {
     const { bgColor, color, borderColor, icon } = getStatusStyles(leave.status_display);
+    const { lbgColor, lcolor, lborderColor, licon } = getLeaveStyles(leave.leave_type_display);
   // console.log(leave,"check")
     return (
       <ApplicationCard
@@ -257,37 +234,45 @@ const LeaveScreen = () => {
         <ApplicationStatusContainer>
           <View>
           <DetailText>
-            Emp. Id.: <DetailHighlight>{leave.emp_data.emp_id}</DetailHighlight>
+            Emp.: <DetailHighlight>{leave.emp_data.emp_id} [{leave.emp_data.name}]</DetailHighlight>
           </DetailText>
-          <DetailText>
-            Emp. Name: <DetailHighlight>{leave.emp_data.name}</DetailHighlight>
-          </DetailText>
-          <DetailText>Date: {leave.from_date} to {leave.to_date}</DetailText>
-          <DetailText>
+          <DetailText style={{ paddingTop: '10px' }}>Date: {leave.from_date} to {leave.to_date}</DetailText>
+          {/* <DetailText>
             Leave Type: <DetailHighlight>{leave.leave_type_display}</DetailHighlight>
-          </DetailText>
-          <DetailText>
+          </DetailText> */}
+          {/* <DetailText>
+            Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
+          </DetailText> */}
+          
+          </View>
+          <View style={{ flexDirection: 'culomn', justifyContent:'center',alignItems: 'center', }}>
+          <ApplicationStatus bgColor={lbgColor}>
+              <ApplicationStatusText color={lcolor}>{leave.leave_type_display}</ApplicationStatusText>
+              {/* <MaterialIcons name={licon} size={24} color={lcolor} /> */}
+            </ApplicationStatus>
+            <DetailText>
             Apply Days: <DetailHighlight>{leave.no_leave_count} Days</DetailHighlight>
           </DetailText>
-          </View>
-          <View style={{ flexDirection: 'culomn' }}>
-            <ApplicationStatus bgColor={bgColor}>
+
+            {/* <ApplicationStatus bgColor={bgColor}>
               <ApplicationStatusText color={color}>{leave.status_display}</ApplicationStatusText>
               <MaterialIcons name={icon} size={24} color={color} />
-            </ApplicationStatus>
-            {/* Show Cancel button only if status is "Submitted" */}
-            {leave.status_display === 'Submitted' && (
-              <>
-              <ApprovelButton onPress={() => approveLeave(leave)} >
-                <ButtonText>Approve</ButtonText>
-              </ApprovelButton>
+            </ApplicationStatus> */}
+            
+          </View>
+        </ApplicationStatusContainer>
+        {/* Show Cancel button only if status is "Submitted" */}
+        {leave.status_display === 'Submitted' && (
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              
               <RejectButton onPress={() => rejectLeave(leave)} >
                 <ButtonText>Reject</ButtonText>
               </RejectButton>
-            </>
+              <ApprovelButton onPress={() => approveLeave(leave)} >
+                <ButtonText>Approve</ButtonText>
+              </ApprovelButton>
+            </View>
             )}
-          </View>
-        </ApplicationStatusContainer>
 
       </ApplicationCard>
     );
@@ -296,7 +281,7 @@ const LeaveScreen = () => {
   return (
     <>
     
-    <HeaderComponent headerTitle="Approve Leaves" onBackPress={handleBackPress} />
+    <HeaderComponent headerTitle="Approve Leaves List" onBackPress={handleBackPress} />
       <Container>
         <ApplicationList>
         <FlatList
