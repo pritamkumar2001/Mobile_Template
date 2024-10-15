@@ -105,7 +105,7 @@ const LeaveActionModal = ({ isVisible, leave, onClose, actionType }) => {
 
     postEmpLeave(leavePayload)
       .then(() => {
-        Alert.alert('Action Completed Successfully', `Successfully ${actionMessages[actionType]}`);
+        Alert.alert('Action Completed Successfully', `${actionMessages[actionType]}`);
         onClose();
       })
       .catch((error) => {

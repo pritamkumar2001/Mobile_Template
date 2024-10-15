@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AppContext } from '../context/AppContext';
 import { getProfileInfo } from '../components/services/authServices';
 import HeaderComponent from './HeaderComponent';
-import { useNavigation } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 
 // Styled components
 const Container = styled.View`
@@ -46,8 +46,8 @@ const InfoText = styled.Text`
   margin-bottom: 10px;
 `;
 const ProfileImage = styled.Image`
-  width: 80px;
-  height: 80px;
+  width: 85px;
+  height: 85px;
   border-radius: 60px;
 `;
 
@@ -90,9 +90,11 @@ const ProfileScreen = () => {
   const [profile, setProfile] = useState({});
   const [isManager, setIsManager] = useState(false);
 
+  const router = useRouter();
   
   const navigation = useNavigation();
   
+  console.log('Profile data--',profile.emp_data)
 
   useEffect(() => {
     // Fetch profile data
@@ -106,13 +108,19 @@ const ProfileScreen = () => {
     navigation.goBack();
   };
 
+  const handlePressPassword = () => {
+    router.push({
+      pathname: 'ResetPassword' 
+    });
+  };
+
   return (
     <>
     <HeaderComponent headerTitle="My Profile" onBackPress={handleBackPress} />
     <Container>
       
       <AvatarContainer>
-        <ProfileImage source={{ uri: profile.image }} />
+        <ProfileImage source={{ uri: profile?.image }} />
       </AvatarContainer>
       <UserName>{profile&&profile?.emp_data?.name}</UserName>
       <UserName>{profile&&profile?.user_name}</UserName>
@@ -125,15 +133,23 @@ const ProfileScreen = () => {
         }
       </IsManagerContainer>
 
-      <InfoText>Employee Id : {profile?.emp_data?.emp_id}</InfoText>
-      <InfoText>Department : {profile?.emp_data?.department_name}</InfoText>
+      
+      {profile?.emp_data?.emp_id ? (
+        <InfoText>Employee Id : {profile?.emp_data?.emp_id}</InfoText>
+      ) : null}
+      {profile?.emp_data?.department_name ? (
+        <InfoText>Department : {profile?.emp_data?.department_name}</InfoText>
+      ) : null}
+      {profile?.user_nick_name ? (
+        <InfoText>Mob. No. : {profile.user_nick_name}</InfoText>
+      ) : null}
 
       <LogOutButton onPress={() => {logout()}}>
         <MaterialCommunityIcons name="logout" size={24} color="red" />
         <LogOutText>Log Out</LogOutText>
       </LogOutButton>
 
-      <ChangePasswordButton>
+      <ChangePasswordButton onPress={() => {handlePressPassword()}}>
         <ChangePasswordText>Change Your Password</ChangePasswordText>
       </ChangePasswordButton>
     </Container>

@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Platform, StatusBar, ScrollVie
 import styled from 'styled-components/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useNavigation } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { postEmpLeave } from './services/productServices';
 import HeaderComponent from './HeaderComponent';
 
@@ -72,6 +72,7 @@ const ApplyLeave = (props) => {
   const [leave_type, setLeave_type] = useState('EL');
   const [numOfDays, setNumOfDays] = useState(0);
   const call_mode = 'ADD';
+  const router = useRouter();
 
   const navigation = useNavigation();
   const handleBackPress = () => {
@@ -85,7 +86,7 @@ const ApplyLeave = (props) => {
   }, []);
 
   const addLeave = () => {
-    if (!fromDate || !toDate || !leave_type) {
+    if (!fromDate || !toDate || !leave_type || !remarks) {
       Alert.alert('Incomplete Form', 'Please fill all required fields');
       return;
     }
@@ -111,11 +112,11 @@ const ApplyLeave = (props) => {
     postEmpLeave(leavePayload)
       .then((res) => {
         Alert.alert('Application Submitted', 'Leave applied successfully');
-        navigation.goBack();
+        router.push('leave');
       })
       .catch((error) => {
-        console.error(error);
-        Alert.alert('Leave Application Failed', 'Failed to apply leave');
+        // console.error(error);
+        Alert.alert('Leave Application Failed', 'Failed to apply leave, please check the input fields carefully.');
       });
   };
 
@@ -167,7 +168,7 @@ const ApplyLeave = (props) => {
         <FieldContainer>
           <Label>Remark</Label>
           <RemarkInput
-            placeholder="Remark :"
+            placeholder="Remarks"
             value={remarks}
             onChangeText={(text) => setRemarks(text)}
           />

@@ -47,9 +47,7 @@ export function getEmpLeave(leave_type , emp_id, year) {
   }
 
   export function getClaimApprover() { 
-    // let data = {
-    //   'call_mode':'GET'
-    // };
+    let data = {};
     return authAxios(getClaimApproverList)
   }
 

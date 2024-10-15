@@ -1,4 +1,4 @@
-import { useNavigation } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
@@ -121,6 +121,7 @@ const ApproveClaimDetails = (props) => {
   const callType = props?.claim_data?.callType;
   // const claim = props?.claim_data;
   const navigation = useNavigation();
+  const router = useRouter();
   const managerData = profile?.emp_data;
 
   const [claimAmount, setClaimAmount] = useState(claim?.expense_amt);
@@ -129,7 +130,7 @@ const ApproveClaimDetails = (props) => {
   const [eligible, setEligible] = useState(false)
   const [managers, setManagers] = useState([]); // State to hold manager options
   const [managerGradeLevel, setManagerGradeLevel] = useState(0); // State to hold manager's grade level
-  const claimGradeLevel = 100; // Example claim grade level from claim data
+  const [claimGradeLevel, setClaimGradeLevel] = useState(0); // Example claim grade level from claim data
  
 
   useEffect(() => {
@@ -139,14 +140,14 @@ const ApproveClaimDetails = (props) => {
     });
 
     // Fetching Manager List
-  //   getClaimApprover()
-  // .then((res) => {
-  //   console.log('Approve api data---', res);
-  //   setManagers(res);
-  // })
-  // .catch((error) => {
-  //   console.error('Error fetching claim approvers: ', error?.response || error.message || error);
-  // });
+    getClaimApprover()
+  .then((res) => {
+    console.log('Approve api data---', res.data);
+    setManagers(res.data);
+  })
+  .catch((error) => {
+    console.error('Error fetching claim approvers: ', error?.response || error.message || error);
+  });
   }, []);
 
   const handleBackPress = () => {
@@ -158,7 +159,8 @@ const ApproveClaimDetails = (props) => {
     });
   }, [navigation]);
 
-
+  console.log("Profile Data---",profile)
+  console.log('Claim Grade ====',claimGradeLevel)
   
 
   // Function to calculate the difference in days between two dates
@@ -173,60 +175,77 @@ const ApproveClaimDetails = (props) => {
     return `${year}-${formattedMonth}-${day}`;
   };
 
+
+  // Parse the dates using the custom function
+  const submittedDate = new Date(parseDate(claim.submitted_date));
+  const expenseDate = new Date(parseDate(claim.expense_date));
+
+  // Check if date parsing was successful
+  if (isNaN(submittedDate) || isNaN(expenseDate)) {
+    Alert.alert('Date Format Error', 'Invalid date format. Please check the dates.');
+
+    return;
+  }
+
+  // Calculate the difference in milliseconds
+  const timeDifference = submittedDate - expenseDate;
+
+  // Convert milliseconds to days
+  const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+  // Check if manager's grade level allows them to approve the claim
+  const maxApproveDays = managerData?.approve_data?.find(data => data.max_days)?.max_days || 0;
+
+  // if (daysDifference > maxApproveDays) {
+  //   Alert.alert('Approval Not Allowed', `Claim cannot be approved as the difference is greater than ${maxApproveDays} days.`);
+  //   return;
+  // }
  
   useEffect(() => {
     // Ensure manager data and claim amount are available before running the conditions
     if (managerData?.approve_data && claimAmount) {
-        const managerGradeLevel = managerData.approve_data.find(data => data.claim_grade_level)?.claim_grade_level;
+        const approveGradeLevel = managerData.approve_data.find(data => data.claim_grade_level)?.claim_grade_level;
         const maxClaimAmount = managerData.approve_data.find(data => data.max_claim_amt)?.max_claim_amt;
+        setClaimGradeLevel(profile?.emp_data?.grade_level);
 
         // Check if the manager's grade level is lower than the claim grade level
-        if (managerGradeLevel < claimGradeLevel) {
-            Alert.alert('Approval Denied', 'Your grade level does not allow you to approve this claim.');
-            setEligible(true);
+        if (approveGradeLevel > claimGradeLevel) {
+            console.log('Truebtbfv')
+            if (parseFloat(claimAmount) > maxClaimAmount) {
+              Alert.alert('Limit Exceeded', 'Claim amount exceeds your approval limit.');
+              setEligible(true);
+            }
+            if (daysDifference > maxApproveDays) {
+                Alert.alert('Approval Not Allowed', `Claim cannot be approved as the difference is greater than ${maxApproveDays} days.`);
+                setEligible(true);
+            }
         }
 
         // Check if the claim amount exceeds the manager's approval limit
-        if (parseFloat(claimAmount) > maxClaimAmount) {
-            Alert.alert('Limit Exceeded', 'Claim amount exceeds your approval limit.');
-            setEligible(true);
-        }
+        
     }
-}, [managerData, claimAmount, claimGradeLevel]);
-
+}, [managerData, claimAmount, claimGradeLevel, maxApproveDays]);
 
   const handleAction = (res1) => {
-    if (claimAmount.trim() === '' || remarks.trim() === '') {
-      Alert.alert('Incomplete Submission', 'Please fill in all fields including selecting a manager.');
-      return;
-    }
+    if(res1==='REJECT'|| res1==='SEND_BACK'){
+      if(eligible){
+        if (claimAmount.trim() === '' || remarks.trim() === '' || selectedManager.trim()=== '') {
+          Alert.alert('Incomplete Submission', 'Please fill in all fields including selecting a manager.');
+          return;
+        }
+      }
+      else{
+        if (claimAmount.trim() === '' || remarks.trim() === '') {
+          Alert.alert('Incomplete Submission', 'Please fill in all fields including selecting a manager.');
+          return;
+        }
+      }
+    
+  }
 
     
 
-    // Parse the dates using the custom function
-    const submittedDate = new Date(parseDate(claim.submitted_date));
-    const expenseDate = new Date(parseDate(claim.expense_date));
-
-    // Check if date parsing was successful
-    if (isNaN(submittedDate) || isNaN(expenseDate)) {
-      Alert.alert('Date Format Error', 'Invalid date format. Please check the dates.');
-
-      return;
-    }
-
-    // Calculate the difference in milliseconds
-    const timeDifference = submittedDate - expenseDate;
-
-    // Convert milliseconds to days
-    const daysDifference = timeDifference / (1000 * 3600 * 24);
-
-    // Check if manager's grade level allows them to approve the claim
-    const maxApproveDays = managerData?.approve_data?.find(data => data.max_days)?.max_days || 0;
-
-    if (daysDifference > maxApproveDays) {
-      Alert.alert('Approval Not Allowed', `Claim cannot be approved as the difference is greater than ${maxApproveDays} days.`);
-      return;
-    }
+    
 
     // Build claim payload
     const claimPayload = {
@@ -240,8 +259,8 @@ const ApproveClaimDetails = (props) => {
     // Post the claim action
     postClaimAction(claimPayload)
       .then((res) => {
-        Alert.alert('Claim Status Update', `Claim ${res1}.`);
-        navigation.goBack();
+        Alert.alert('Claim Status Update', `Claim action updated.`);
+        router.push('leave');
       })
       .catch((error) => {
         Alert.alert('Leave Action Failed', `Failed to ${res1} leave.`);
@@ -260,7 +279,7 @@ const ApproveClaimDetails = (props) => {
         <ClaimDetailText color="#ff8c00">Claim Date: {claim?.expense_date}</ClaimDetailText>
         <ClaimDetailText>Claim Remark: {claim?.remarks}</ClaimDetailText>
       </ClaimDetailContainer>
-      <InstructionsText>Fill the below fields for any action:</InstructionsText>
+      {/* <InstructionsText>Fill the below fields for any action:</InstructionsText> */}
 
       <FillFieldsContainer>
         <InputLabel>Claim Amount :</InputLabel>
@@ -284,7 +303,7 @@ const ApproveClaimDetails = (props) => {
           style={dropdownStyle}
           placeholderStyle={{ color: '#666' }}
           selectedTextStyle={{ color: '#333' }}
-          data={managers.map(manager => ({ label: manager.emp_name, value: manager.emp_id }))}
+          data={managers.map(manager => ({ label: `${manager.name} [${manager.emp_id}]` , value: manager.id }))}
           labelField="label"
           valueField="value"
           value={selectedManager}
@@ -300,7 +319,7 @@ const ApproveClaimDetails = (props) => {
           <ButtonText>Reject Claim</ButtonText>
         </ActionButton>
         {callType === 'Approve' && (
-          <ActionButton color="#4d88ff" onPress={() => handleAction('APPROVE')}>
+          <ActionButton color="#06BF63" onPress={() => handleAction('APPROVE')}>
             <ButtonText>Approve Claim</ButtonText>
           </ActionButton>
         )}

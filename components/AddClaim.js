@@ -306,7 +306,7 @@ const AddClaim = () => {
       .then((res) => {
         if (res.status === 200) {
         Alert.alert('Success', 'Claim submitted successfully.');
-        navigation.goBack();
+        router.push('ClaimScreen')
         } else {
               console.error('Unexpected response:', res);
               Alert.alert('Claim Submission Error', 'Failed to claim. Unexpected response.');

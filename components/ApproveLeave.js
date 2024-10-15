@@ -210,7 +210,7 @@ const LeaveScreen = () => {
 
 
   const handleBackPress = () => {
-    navigation.goBack();
+    router.push('home');
   };
 
 
@@ -232,7 +232,7 @@ const LeaveScreen = () => {
   const getStatusStyles = (status_display) => {
     switch (status_display) {
       case 'Submitted':
-        return { bgColor: '#fff7e6', color: '#ffcc80', borderColor: '#ffcc80', icon: 'highlight-off' };
+        return { bgColor: '#fff7e6', color: '#ffcc80', borderColor: '#ffcc80', icon: 'check' };
       case 'Rejected':
         return { bgColor: '#ffe6e6', color: '#ff6666', borderColor: '#ff6666', icon: 'cancel' };
       case 'Cancelled':
@@ -318,7 +318,7 @@ const LeaveScreen = () => {
       <LeaveActionModal 
         isVisible={isApproveModalVisible} 
         leave={selectedLeave} 
-        onClose={() => setApproveModalVisible(false)} 
+        onClose={() => {setApproveModalVisible(false),router.push('ApproveLeaves')}} 
         actionType="APPROVE" 
       />
       )}
@@ -328,7 +328,7 @@ const LeaveScreen = () => {
         <LeaveActionModal 
         isVisible={isRejectModalVisible} 
         leave={selectedLeave} 
-        onClose={() => setRejectModalVisible(false)} 
+        onClose={() => {setRejectModalVisible(false),router.push('ApproveLeaves')}} 
         actionType="REJECT" 
         />
       </>

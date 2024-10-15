@@ -116,7 +116,7 @@ const ClaimScreen = () => {
     if (selectedImageUrl) {
       setSelectedImageUrl(null);
     } else {
-      navigation.goBack();
+      router.push('home');
     }
   };
 
@@ -141,12 +141,38 @@ const ClaimScreen = () => {
     }
   };
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'S':
+        return 'SUBMITTED';
+      case 'A':
+        return 'APPROVED';
+      case 'F':
+        return 'FORWARDED';
+      case 'B':
+        return 'BACK TO CLAIMANT';
+      case 'R':
+        return 'REJECTED';
+      default:
+        return 'UNKNOWN STATUS';
+    }
+  };
+
+  console.log('Claim Data---',claimData)
+
   const renderClaimItem = ({ item }) => (
     <ClaimCard>
       <View>
-        <ClaimText>Item Name: {item.item_name}</ClaimText>
-        <ClaimText>Claim ID: {item.claim_id}</ClaimText>
-        <ClaimText>Expense Date: {item.expense_date}</ClaimText>
+      <ClaimText>Item Name: {item.item_name}</ClaimText>
+      <ClaimText>Claim ID: {item.claim_id}</ClaimText>
+      <ClaimText>Expense Date: {item.expense_date}</ClaimText>
+
+      {/* Display Claim Status based on expense_status */}
+      <ClaimText>Status: {getStatusText(item.expense_status)}</ClaimText>
+      
+      {item.approved_by && (
+      <ClaimText>Approved By: {item.approved_by}</ClaimText>
+      )}
       </View>
       <ClaimAmountContainer>
         <ClaimAmountText>₹ {item.expense_amt}</ClaimAmountText>
@@ -182,7 +208,7 @@ const ClaimScreen = () => {
 
       <Container>
         <FlatList
-          data={claimData}
+          data={[...claimData].reverse()}
           renderItem={renderClaimItem}
           keyExtractor={(item) => item.claim_id.toString()}
           showsVerticalScrollIndicator={false}

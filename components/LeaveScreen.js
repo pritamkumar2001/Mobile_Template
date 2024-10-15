@@ -184,6 +184,18 @@ const LeaveScreen = () => {
   const [isCancelModalVisible, setCancelModalVisible] = useState(false);
   const [leaveData, setLeaveData] = useState([]);
   const [selectedTab, setSelectedTab] = useState('My Leave');
+  const [randomValue, setRandomValue] = useState(0);
+
+
+  const generateRandomValue = () => {
+    return Math.floor(Math.random() * 100); // Generates a random number between 0 and 99
+  };
+
+  useEffect(() => {
+    // Update mathRender each time the component is mounted
+    setRandomValue(generateRandomValue());
+  }, []); 
+
 
   const handlePress = (leave) => {
     router.push({
@@ -207,10 +219,12 @@ const LeaveScreen = () => {
     setCancelModalVisible(true);
   };
 
+  console.log('Random value---',randomValue)
+
   useEffect(() => {
     leaveDetails();
     
-  }, [selectedTab]);
+  }, [selectedTab,randomValue]);
 
   const leaveDetails = () => {
     getEmpLeave(selectedTab === 'My Leave' ? 'EL' : selectedTab === 'My Cancel Leave' ? 'EL' : 'WH').then((res) => {
@@ -219,7 +233,7 @@ const LeaveScreen = () => {
   };
 
   const handleBackPress = () => {
-    navigation.goBack();
+    router.push('home');
   };
 
   const count = leaveData.length
@@ -364,7 +378,7 @@ const LeaveScreen = () => {
         {/* Application List Section */}
         <ApplicationList>
         <FlatList
-        data={leaveData}
+        data={[...leaveData].reverse()}
         renderItem={renderLeaveItem}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}  // Hide the scrollbar
@@ -389,7 +403,7 @@ const LeaveScreen = () => {
           <LeaveActionModal 
             isVisible={isCancelModalVisible} 
             leave={selectedLeave} 
-            onClose={() => setCancelModalVisible(false)} 
+            onClose={() => {setCancelModalVisible(false),router.push('leave')}} 
             actionType="CANCEL" 
           />
       )}

@@ -4,12 +4,23 @@ import styled from 'styled-components/native';
 import {AppContext} from '../context/AppContext'
 import { getCompanyInfo, getProfileInfo } from '../components/services/authServices'
 import { Link, useRouter } from "expo-router";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 const Container = styled.View`
   background-color: #f5f5f5;
 `;
 
+const GradientHeader = styled(LinearGradient)`
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  position: relative;
+`;
 const MenuContainer = styled(ScrollView)`
   height: ${height * 0.6}px;
   margin-top: 30px;
@@ -47,9 +58,9 @@ const MenuText = styled.Text`
 `;
 
 const Header = styled.View`
-  background-color: #a970ff;
-  height: ${height * 0.3}px;  /* 30% of screen height */
-  padding: 20px;
+  /* background-color: #a970ff; */
+  height: ${height * 0.35}px;  /* 30% of screen height */
+  /* padding: 20px; */
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   align-items: center;
@@ -59,30 +70,35 @@ const Header = styled.View`
 const HeaderImageContainer = styled.View`
   display: flex;
   width: 100%;
-  justify-content: space-between;
-  flex-direction: row;
+  /* justify-content: space-between; */
+  align-items: flex-end;
+  /* flex-direction: row; */
 `;
 
 const LogoContainer = styled.View`
-  width: ${width * 0.35}px;  /* Responsive width */
-  height: ${width * 0.15}px;  /* Responsive height */
-  /* background-color: aliceblue; */
-  padding: 1px;
+  width: ${width * 0.25}px;  /* Responsive width */
+  height: ${width * 0.25}px;  /* Responsive height */
   display: flex;
   justify-content: center;
+  background-color: aliceblue;
+  margin-bottom: 20px;
   align-items: center;
-
-  border-radius: 20px;
+  border-radius: ${width * 0.35}px;  /* Circular container */
+  overflow: hidden;  /* Ensures the image stays within the container */
 `;
 
-const Logo = styled.Image`
-  width: 100%;
-  height: 100%;
-  border-radius: 20px;
+const Logo = styled.Image.attrs(() => ({
+  resizeMode: 'cover',  // Cover ensures the image fills the container
+}))`
+  width: 95%;
+  height: 95%;
+  border-radius: ${width * 0.35}px;  /* Ensures the image respects the circular shape */
 `;
+
 
 const HeaderContent = styled.View`
   flex: 1;
+  margin-top: -5%;
   justify-content: center;
   align-items: center;
 `;
@@ -95,30 +111,30 @@ const CompNameContainer = styled.View`
 
 const HeaderText = styled.Text`
   color: white;
-  font-size: ${width * 0.06}px;  /* Responsive font size */
+  font-size: ${width * 0.04}px;
   font-weight: bold;
   text-align: center;
 `;
 
 const HeaderCompanyName = styled.Text`
-  color: black;
-  font-size: ${width * 0.03}px;
+  color: white;
+  font-size: ${width * 0.06}px;  /* Responsive font size */
   font-weight: bold;
-  text-align: left;
+  text-align: center;
 `;
 
-const IconContainer = styled.View`
+const IconContainer = styled.TouchableOpacity`
   width: ${width * 0.15}px;
   height: ${width * 0.15}px;
   border-radius: ${width * 0.075}px;
-  background-color: aliceblue;
+  background-color: #e5d1ff;
   align-items: center;
   justify-content: center;
 `;
 
 const ProfileIcon = styled.Image`
-  width: ${width * 0.12}px;  /* Responsive width */
-  height: ${width * 0.12}px;  /* Responsive height */
+  width: ${width * 0.13}px;  /* Responsive width */
+  height: ${width * 0.13}px;  /* Responsive height */
   border-radius: ${width * 0.06}px;  /* Responsive border radius */
 `;
 
@@ -193,24 +209,19 @@ const HomePage = () => {
       <StatusBar barStyle={'light-content'} backgroundColor={'#a970ff'} />
       {/* Header */}
       <Header>
-        <HeaderImageContainer>
+      <GradientHeader colors={['#7a00ff', '#b700ff']} start={[0.0, 0.5]} end={[1.0, 0.5]}>
+        
+        
+        <HeaderContent>
         <LogoContainer>
           <Logo source={{ uri: company.image }} />
 
         </LogoContainer>
-        
-        <IconContainer>
-
-          <ProfileIcon source={{ uri: profile.image }} />
-        </IconContainer>
-        </HeaderImageContainer>
-        
-        <HeaderContent>
-          {/* <HeaderCompanyName>{company.name}</HeaderCompanyName> */}
+          <HeaderCompanyName>{company.name}</HeaderCompanyName> 
           <HeaderText>Welcome to ATOMWALK HRM!</HeaderText>
         </HeaderContent>
 
-        
+        </GradientHeader>
       </Header>
 
       <MenuContainer>

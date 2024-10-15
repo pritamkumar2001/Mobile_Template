@@ -131,6 +131,8 @@ const ApproveClaim = () => {
         return 'SUBMITTED';
       case 'A':
         return 'APPROVED';
+      case 'F':
+        return 'FORWARDED';
       case 'R':
         return 'REJECTED';
       default:
@@ -147,6 +149,9 @@ const ApproveClaim = () => {
     });
     setFilteredData(filtered);
   };
+
+  // console.log('Claim Data===',claimData)
+  console.log('Filterd Data===',filteredData)
 
   const handleViewFile = (fileUrl) => {
     const fileExtension = fileUrl.split('.').pop().split('?')[0].toLowerCase();
@@ -178,13 +183,14 @@ const ApproveClaim = () => {
     if (selectedImageUrl) {
       setSelectedImageUrl(null);
     } else {
-      navigation.goBack();
+      router.push('home');
     }
   };
 
   const renderClaimItem = ({ item }) => {
     const status = getClaimStatus(item.expense_status);
     const isSubmitted = status === 'SUBMITTED';
+    const isForwarded = status === 'FORWARDED';
     const isRejected = status === 'REJECTED';
     const isApproved = status === 'APPROVED';
 
@@ -219,10 +225,10 @@ const ApproveClaim = () => {
 
           <ApproveButton
             disabled={!isSubmitted}
-            disabledColor={isRejected ? '#ff4444' : isApproved ? '#00C853' : '#4d88ff'}
+            disabledColor={isRejected ? '#ff4444' : isForwarded ? '#ffa500': isApproved ? '#00C853' : '#4d88ff'}
             onPress={() => handleApprove(item,'Approve')}
           >
-            <ButtonText>{isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : 'APPROVE'}</ButtonText>
+            <ButtonText>{isRejected ? 'REJECTED' : isApproved ? 'APPROVED' : isForwarded ? 'FORWARDED' : 'APPROVE'}</ButtonText>
           </ApproveButton>
         </ClaimStatusContainer>
       </ClaimCard>
@@ -260,7 +266,7 @@ const ApproveClaim = () => {
         </SearchContainer>
 
         <FlatList
-          data={filteredData}
+          data={[...filteredData].reverse()}
           renderItem={renderClaimItem}
           keyExtractor={(item) => item.claim_id.toString()}
           showsVerticalScrollIndicator={false}
