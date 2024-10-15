@@ -20,7 +20,7 @@ const ClaimCard = styled.TouchableOpacity`
   border-width: 0;
   padding: 20px;
   margin-bottom: 15px;
-  border: 1px solid black;
+  border: 1px solid #a970ff;
   shadow-color: #000;
   shadow-offset: 0px 2px;
   shadow-opacity: 0.1;

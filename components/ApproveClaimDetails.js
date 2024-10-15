@@ -14,7 +14,7 @@ const Container = styled.View`
   background-color: #ffffff;
 `;
 const ClaimDetailContainer = styled.View`
-  background-color: #e1d7f5;
+ border: 1px solid #a970ff;
   padding: 16px;
   border-radius: 12px;
   margin-bottom: 20px;
@@ -266,27 +266,28 @@ const ApproveClaimDetails = (props) => {
         Alert.alert('Leave Action Failed', `Failed to ${res1} leave.`);
       });
   };
-
   return (
     <>
     {/* <HeaderComponent headerTitle={`${callType} Leaves`} onBackPress={handleBackPress} /> */}
-    <HeaderComponent headerTitle={claim?.employee_name} onBackPress={handleBackPress} />
+    <HeaderComponent headerTitle={"Approve"+" "+`(${claim?.claim_id})`} onBackPress={handleBackPress} />
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <Container>
       <ClaimDetailContainer>
-        <ClaimDetailText color="#ff8c00">Claim Id: {claim?.claim_id}</ClaimDetailText>
         <ClaimDetailText>Expense Item: {claim?.item_name}</ClaimDetailText>
-        <ClaimDetailText color="#ff8c00">Claim Date: {claim?.expense_date}</ClaimDetailText>
+        <ClaimDetailText color="#ff8c00">Expense Date: {claim?.expense_date}</ClaimDetailText>
+        <ClaimDetailText color="#ff8c00">Claim Id: {claim?.claim_id}</ClaimDetailText>
         <ClaimDetailText>Claim Remark: {claim?.remarks}</ClaimDetailText>
+        <ClaimDetailText>Emp: {claim?.employee_name}</ClaimDetailText>
+        <ClaimDetailText>Claim Amount: {claim?.expense_amt}</ClaimDetailText>
       </ClaimDetailContainer>
       {/* <InstructionsText>Fill the below fields for any action:</InstructionsText> */}
 
       <FillFieldsContainer>
-        <InputLabel>Claim Amount :</InputLabel>
+        <InputLabel>Approve Amount :</InputLabel>
         <InputField
           placeholder="Enter Claim Amount"
           keyboardType="numeric"
-          value={claimAmount}
+          // value={claimAmount}
           onChangeText={setClaimAmount}
         />
         <InputLabel>Remark :</InputLabel>
