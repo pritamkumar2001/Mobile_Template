@@ -125,6 +125,7 @@ const ApproveClaimDetails = (props) => {
   const managerData = profile?.emp_data;
 
   const [claimAmount, setClaimAmount] = useState(claim?.expense_amt);
+  const [approveAmount, setApproveAmount] = useState(0);
   const [remarks, setRemarks] = useState(claim?.approval_remarks);
   const [selectedManager, setSelectedManager] = useState('');
   const [eligible, setEligible] = useState(false)
@@ -142,7 +143,7 @@ const ApproveClaimDetails = (props) => {
     // Fetching Manager List
     getClaimApprover()
   .then((res) => {
-    console.log('Approve api data---', res.data);
+    // console.log('Approve api data---', res.data);
     setManagers(res.data);
   })
   .catch((error) => {
@@ -151,7 +152,7 @@ const ApproveClaimDetails = (props) => {
   }, []);
 
   const handleBackPress = () => {
-    navigation.goBack();
+    router.push('home');
   };
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -159,8 +160,8 @@ const ApproveClaimDetails = (props) => {
     });
   }, [navigation]);
 
-  console.log("Profile Data---",profile)
-  console.log('Claim Grade ====',claimGradeLevel)
+  // console.log("Profile Data---",profile)
+  // console.log('Claim Grade ====',claimGradeLevel)
   
 
   // Function to calculate the difference in days between two dates
@@ -210,7 +211,7 @@ const ApproveClaimDetails = (props) => {
 
         // Check if the manager's grade level is lower than the claim grade level
         if (approveGradeLevel > claimGradeLevel) {
-            console.log('Truebtbfv')
+            // console.log('Truebtbfv')
             if (parseFloat(claimAmount) > maxClaimAmount) {
               Alert.alert('Limit Exceeded', 'Claim amount exceeds your approval limit.');
               setEligible(true);
@@ -226,22 +227,35 @@ const ApproveClaimDetails = (props) => {
     }
 }, [managerData, claimAmount, claimGradeLevel, maxApproveDays]);
 
+// console.log("Approve amt",parseFloat(claimAmount))
+
   const handleAction = (res1) => {
-    if(res1==='REJECT'|| res1==='SEND_BACK'){
+    if(res1==='APPROVE'){
+      if (approveAmount > parseFloat(claimAmount) ) {
+        Alert.alert('Invalid Submission', 'The approved amount must be less than or equal to the claim amount. Please check your entry and try again.');
+        return;
+      } else {
       if(eligible){
-        if (claimAmount.trim() === '' || remarks.trim() === '' || selectedManager.trim()=== '') {
+        if (approveAmount.trim() === '' || remarks.trim() === '' || !selectedManager) {
           Alert.alert('Incomplete Submission', 'Please fill in all fields including selecting a manager.');
           return;
         }
       }
       else{
-        if (claimAmount.trim() === '' || remarks.trim() === '') {
+        if (approveAmount.trim() === '' || remarks.trim() === '') {
           Alert.alert('Incomplete Submission', 'Please fill in all fields including selecting a manager.');
           return;
         }
       }
-    
-  }
+      
+    }
+    }
+    if (res1==='SEND_BACK') {
+      if (remarks.trim() === '') {
+        Alert.alert('Incomplete Submission', 'Please fill the remark field to send back.');
+        return;
+      }
+    }
 
     
 
@@ -250,7 +264,7 @@ const ApproveClaimDetails = (props) => {
     // Build claim payload
     const claimPayload = {
       approve_by_id: selectedManager, // Use the selected manager's ID
-      approve_amt: `${claimAmount}`,
+      approve_amt: `${approveAmount}`,
       claim_id: `${claim?.id}`,
       remarks,
       call_mode: res1,
@@ -260,7 +274,7 @@ const ApproveClaimDetails = (props) => {
     postClaimAction(claimPayload)
       .then((res) => {
         Alert.alert('Claim Status Update', `Claim action updated.`);
-        router.push('leave');
+        router.push('ApproveClaim');
       })
       .catch((error) => {
         Alert.alert('Leave Action Failed', `Failed to ${res1} leave.`);
@@ -274,11 +288,11 @@ const ApproveClaimDetails = (props) => {
     <Container>
       <ClaimDetailContainer>
         <ClaimDetailText>Expense Item: {claim?.item_name}</ClaimDetailText>
-        <ClaimDetailText color="#ff8c00">Expense Date: {claim?.expense_date}</ClaimDetailText>
-        <ClaimDetailText color="#ff8c00">Claim Id: {claim?.claim_id}</ClaimDetailText>
-        <ClaimDetailText>Claim Remark: {claim?.remarks}</ClaimDetailText>
+        <ClaimDetailText>Expense Date: {claim?.expense_date}</ClaimDetailText>
         <ClaimDetailText>Emp: {claim?.employee_name}</ClaimDetailText>
         <ClaimDetailText>Claim Amount: {claim?.expense_amt}</ClaimDetailText>
+        {/* <ClaimDetailText color="#ff8c00">Claim Id: {claim?.claim_id}</ClaimDetailText> */}
+        <ClaimDetailText>Claim Remark: {claim?.remarks}</ClaimDetailText>
       </ClaimDetailContainer>
       {/* <InstructionsText>Fill the below fields for any action:</InstructionsText> */}
 
@@ -287,8 +301,8 @@ const ApproveClaimDetails = (props) => {
         <InputField
           placeholder="Enter Claim Amount"
           keyboardType="numeric"
-          // value={claimAmount}
-          onChangeText={setClaimAmount}
+          value={approveAmount}
+          onChangeText={setApproveAmount}
         />
         <InputLabel>Remark :</InputLabel>
         <InputField

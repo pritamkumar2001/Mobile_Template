@@ -66,7 +66,7 @@ const ViewButton = styled.TouchableOpacity`
 `;
 
 const ApproveButton = styled.TouchableOpacity`
-  background-color: ${(props) => (props.disabled ? props.disabledColor : '#28a745')};
+  background-color: ${(props) => (props.disabled ? props.disabledColor : '#007bff')};
   padding: 12px 16px;
   border-radius: 28px;
   margin-top: 10px;
@@ -238,13 +238,13 @@ const ApproveClaim = () => {
       onPress={() => handleCardPress(item)}>
         <ClaimStatusContainer>
           <View>
-            <ClaimText>Claim ID: {item.claim_id}</ClaimText>
+            <ClaimText>{item.claim_id}</ClaimText>
             <ClaimText>Expense Date: {item.expense_date}</ClaimText>
             <ClaimText>Item Name: {item.item_name}</ClaimText>
-            <ClaimText>Emp: {item.employee_name}</ClaimText>
+            <ClaimText>{item.employee_name}</ClaimText>
           </View>
           <View style={{alignItems:'center'}}>
-            {/* <StatusData> */}
+            {/* <StatusData disabledColor={isRejected ? '#dc3545' : isForwarded ? '#ffc107' : '#28a745'}>{status}> */}
             <ClaimText2  disabledColor={isRejected ? '#dc3545' : isForwarded ? '#ffc107' : '#28a745'}>{status}</ClaimText2>
             {/* </StatusData> */}
             <ClaimAmountText> ₹ {item.expense_amt}</ClaimAmountText>

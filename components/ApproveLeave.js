@@ -269,7 +269,7 @@ const LeaveScreen = () => {
         <ApplicationStatusContainer>
           <View>
           <DetailText>
-            Emp.: <DetailHighlight>{leave.emp_data.emp_id} [{leave.emp_data.name}]</DetailHighlight>
+            <DetailHighlight>{leave.emp_data.emp_id} [{leave.emp_data.name}]</DetailHighlight>
           </DetailText>
           <DetailText style={{ paddingTop: '10px' }}>Date: {leave.from_date} to {leave.to_date}</DetailText>
           {/* <DetailText>
